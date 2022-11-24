@@ -3,10 +3,7 @@ package hsge.hsgeback.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
@@ -16,5 +13,18 @@ public class Pet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String sex;
+
+    private String description;
+
+    private Boolean neutralization;
+
+    private String picture;
+
+    private String breed;
+
+    @ManyToOne
+    private User user;
     
 }
