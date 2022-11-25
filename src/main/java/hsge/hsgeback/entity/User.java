@@ -33,7 +33,20 @@ public class User extends BaseEntity{
     
     private String profilePath;
 
-    @OneToMany(mappedBy = "user")
-    private List<Pet> pet = new ArrayList<>();
+//    @OneToMany(mappedBy = "user")
+//    private List<Pet> pet = new ArrayList<>();
+//
+    @OneToOne(mappedBy = "reporterId")
+    private Report reporter;
+
+    @OneToOne(mappedBy = "reporteeId")
+    private Report reportee;
+//
+//    @OneToMany(mappedBy = "userId")
+//    private List<Match> match = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "likeUser")
+//    private List<Chatroom> likeChatroom;
+
 
 }
