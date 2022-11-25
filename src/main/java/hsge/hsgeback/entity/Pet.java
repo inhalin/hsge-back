@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -14,7 +15,7 @@ public class Pet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String sex;
+    private String gender;
 
     private String description;
 
@@ -26,5 +27,13 @@ public class Pet {
 
     @ManyToOne
     private User user;
-    
+
+//    @OneToMany(mappedBy = "petId")
+//    private List<Match> match;
+
+
+    // 태그 작업 추가로 필요함미다.
+    private String like; // 좋아요 태그
+
+    private String dislike; // 싫어요 태그
 }
