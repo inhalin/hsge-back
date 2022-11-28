@@ -1,5 +1,6 @@
 package hsge.hsgeback.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,9 +9,9 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Getter
 @NoArgsConstructor
+@Getter
+@Entity
 public class User extends BaseEntity{
 
     @Id
@@ -33,20 +34,32 @@ public class User extends BaseEntity{
     
     private String profilePath;
 
-//    @OneToMany(mappedBy = "user")
-//    private List<Pet> pet = new ArrayList<>();
-//
-    @OneToOne(mappedBy = "reporterId")
-    private Report reporter;
+    @OneToMany(mappedBy = "user")
+    private List<Pet> pets = new ArrayList<>();
 
-    @OneToOne(mappedBy = "reporteeId")
-    private Report reportee;
-//
-//    @OneToMany(mappedBy = "userId")
-//    private List<Match> match = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "likeUser")
-//    private List<Chatroom> likeChatroom;
+    @OneToMany(mappedBy = "reporter")
+    private List<Report> reporter;
 
+    @OneToMany(mappedBy = "reportee")
+    private List<Report> reportee;
 
+    @OneToMany(mappedBy = "user")
+    private List<Match> matchList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "likeUser")
+    private List<Chatroom> likeUser;
+
+    @OneToMany(mappedBy = "likedUser")
+    private List<Chatroom> likedUser;
+
+    @OneToMany(mappedBy = "userId")
+    private List<Message> messageList = new ArrayList<>();
+
+    @Builder
+    public User(String email, String nickname, String password, Double latitude, Double longtitude, String role, String profilePath, List<Pet> pet, Report reporter, Report reportee, List<Match> matchList, List<Chatroom> likeUser, List<Chatroom> likedUser, List<Message> messageList) {
+        this.nickname = nickname;
+        this.latitude = latitude;
+        this.longtitude = longtitude;
+        this.profilePath = profilePath;
+    }
 }

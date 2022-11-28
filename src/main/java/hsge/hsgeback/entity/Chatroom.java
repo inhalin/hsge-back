@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -18,4 +20,7 @@ public class Chatroom extends BaseEntity{
 
     @ManyToOne
     private User likedUser;
+
+    @OneToMany(mappedBy = "chatroom")
+    private List<Message> messageList = new ArrayList<>();
 }
