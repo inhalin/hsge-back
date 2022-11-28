@@ -8,6 +8,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Entity
+@Table(name = "matching")
 public class Match extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
