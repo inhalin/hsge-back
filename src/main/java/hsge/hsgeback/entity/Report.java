@@ -1,5 +1,6 @@
 package hsge.hsgeback.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,11 +18,17 @@ public class Report extends BaseEntity{
     private String description;
 
     // 연관관계 매핑
-    @OneToOne
-    private User reporterId;
+    @ManyToOne
+    private User reporter;
 
-    @OneToOne
-    private User reporteeId;
+    @ManyToOne
+    private User reportee;
 
-
+    @Builder
+    public Report(Long id, String description, User reporter, User reportee) {
+        this.id = id;
+        this.description = description;
+        this.reporter = reporter;
+        this.reportee = reportee;
+    }
 }

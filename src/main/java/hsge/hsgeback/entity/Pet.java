@@ -1,9 +1,11 @@
 package hsge.hsgeback.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -15,6 +17,8 @@ public class Pet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String petName;
+
     private String gender;
 
     private String description;
@@ -25,15 +29,26 @@ public class Pet {
 
     private String breed;
 
+    private String likeTag; // 좋아요 태그
+
+    private String dislikeTag; // 싫어요 태그
+
     @ManyToOne
     private User user;
 
-//    @OneToMany(mappedBy = "petId")
-//    private List<Match> match;
+    @OneToMany(mappedBy = "pet")
+    private final List<Match> matchList = new ArrayList<>();
 
 
-    // 태그 작업 추가로 필요함미다.
-    private String like; // 좋아요 태그
-
-    private String dislike; // 싫어요 태그
+    @Builder
+    public Pet(String petName, String gender, String description, Boolean neutralization, String breed, String picture, User user, String likeTag, String dislikeTag){
+        this.petName = petName;
+        this.gender = gender;
+        this.description = description;
+        this.neutralization = neutralization;
+        this.breed = breed;
+        this.picture = picture;
+        this.likeTag = likeTag;
+        this.dislikeTag = dislikeTag;
+    }
 }

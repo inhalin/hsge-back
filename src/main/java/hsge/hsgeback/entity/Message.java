@@ -8,7 +8,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Entity
-public class Message{
+public class Message extends BaseEntity{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
