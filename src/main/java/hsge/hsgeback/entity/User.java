@@ -56,10 +56,21 @@ public class User extends BaseEntity{
     private List<Message> messageList = new ArrayList<>();
 
     @Builder
-    public User(String email, String nickname, String password, Double latitude, Double longtitude, String role, String profilePath, List<Pet> pet, Report reporter, Report reportee, List<Match> matchList, List<Chatroom> likeUser, List<Chatroom> likedUser, List<Message> messageList) {
+    public User(Long id, String email, String nickname, String password, Double latitude, Double longtitude, String role, String profilePath, List<Pet> pets, List<Report> reporter, List<Report> reportee, List<Match> matchList, List<Chatroom> likeUser, List<Chatroom> likedUser, List<Message> messageList) {
+        this.id = id;
+        this.email = email;
         this.nickname = nickname;
+        this.password = password;
         this.latitude = latitude;
         this.longtitude = longtitude;
+        this.role = role;
         this.profilePath = profilePath;
+        this.pets = pets;
+        this.reporter = reporter;
+        this.reportee = reportee;
+        this.matchList = matchList;
+        this.likeUser = likeUser;
+        this.likedUser = likedUser;
+        this.messageList = messageList;
     }
 }
