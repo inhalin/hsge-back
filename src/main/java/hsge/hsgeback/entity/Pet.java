@@ -1,5 +1,7 @@
 package hsge.hsgeback.entity;
 
+import hsge.hsgeback.constant.Age;
+import hsge.hsgeback.constant.Breed;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +21,8 @@ public class Pet {
 
     private String petName;
 
+    private Age age;
+
     private String gender;
 
     private String description;
@@ -27,7 +31,7 @@ public class Pet {
 
     private String picture;
 
-    private String breed;
+    private Breed breed;
 
     private String likeTag; // 좋아요 태그
 
@@ -39,16 +43,18 @@ public class Pet {
     @OneToMany(mappedBy = "pet")
     private final List<Match> matchList = new ArrayList<>();
 
-
     @Builder
-    public Pet(String petName, String gender, String description, Boolean neutralization, String breed, String picture, User user, String likeTag, String dislikeTag){
+    public Pet(Long id, String petName, Age age, String gender, String description, Boolean neutralization, String picture, Breed breed, String likeTag, String dislikeTag, User user) {
+        this.id = id;
         this.petName = petName;
+        this.age = age;
         this.gender = gender;
         this.description = description;
         this.neutralization = neutralization;
-        this.breed = breed;
         this.picture = picture;
+        this.breed = breed;
         this.likeTag = likeTag;
         this.dislikeTag = dislikeTag;
+        this.user = user;
     }
 }
