@@ -62,7 +62,7 @@ public class SecurityConfig {
 
         http.authenticationManager(authenticationManager);
 
-        LoginFilter loginFilter = new LoginFilter("/login", webClient);
+        LoginFilter loginFilter = new LoginFilter("/api/auth/login", webClient);
         loginFilter.setAuthenticationManager(authenticationManager);
         loginFilter.setAuthenticationSuccessHandler(new LoginSuccessHandler(jwtUtil));
         loginFilter.setAuthenticationFailureHandler(new LoginFailureHandler());
@@ -75,7 +75,8 @@ public class SecurityConfig {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeRequests()
-                .anyRequest().permitAll();
+                .antMatchers("/api/**").permitAll()
+                .anyRequest().denyAll();
 
         return http.build();
     }
