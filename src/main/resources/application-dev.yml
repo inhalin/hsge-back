@@ -1,0 +1,20 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+
+  datasource:
+    url: ${db.local.url}
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: ${db.local.username}
+    password: ${db.local.password}
+
+jwt:
+  hash-key: ${secret.jwt.hash-key}
+  expire-time: ${secret.jwt.expire-time}
+  subject: ${secret.jwt.subject}
