@@ -6,12 +6,11 @@ import lombok.Data;
 @Data
 public class BaseResponseDto<T> {
 
-    private String message;
+    private Object message;
 
     private T data;
 
-    @Builder
-    public BaseResponseDto(String message, T data) {
+    public BaseResponseDto(Object message, T data) {
         this.message = message;
         this.data = data;
     }
