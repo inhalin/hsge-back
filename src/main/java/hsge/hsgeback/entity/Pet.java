@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Pet {
+public class Pet extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,5 +56,14 @@ public class Pet {
         this.likeTag = likeTag;
         this.dislikeTag = dislikeTag;
         this.user = user;
+    }
+
+    public void updatePetInfo(String picture, Boolean neutralization, String likeTag, String dislikeTag, String description, Age age) {
+        this.picture = picture;
+        this.neutralization = neutralization;
+        this.likeTag = likeTag;
+        this.dislikeTag = dislikeTag;
+        this.description = description;
+        this.age = age;
     }
 }
