@@ -21,6 +21,7 @@ public class Pet extends BaseEntity {
 
     private String petName;
 
+    @Enumerated(EnumType.STRING)
     private Age age;
 
     private String gender;
@@ -31,6 +32,7 @@ public class Pet extends BaseEntity {
 
     private String picture;
 
+    @Enumerated(EnumType.STRING)
     private Breed breed;
 
     private String likeTag; // 좋아요 태그
