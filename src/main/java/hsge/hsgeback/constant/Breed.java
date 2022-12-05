@@ -1,6 +1,5 @@
 package hsge.hsgeback.constant;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,10 +7,10 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum Breed {
-//    RETRIEVER,
     MIX("믹스"),
     DACHSHUND("닥스훈트"),
     MALTESE("말티즈"),
+    RETRIEVER("리트리버"),
     SCHNAUZER("슈나우저"),
     STANDARD_POODLE("스탠다드 푸들"),
     TOY_POODLE("토이 푸들"),
@@ -39,7 +38,5 @@ public enum Breed {
     ETC("기타");
 
     private String korean;
-
-
 
 }
