@@ -3,27 +3,29 @@ package hsge.hsgeback.dto.response;
 import hsge.hsgeback.constant.Age;
 import hsge.hsgeback.constant.Breed;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.List;
+@Getter
+@Setter
+public class PetInfoResponseDto {
+    private Long id;
 
-@Data
-@Slf4j
-public class PetResponseDto {
+    private String petName;
 
-    private String name;
+    private String age;
+
+    private String gender;
+
+    private String description;
+
+    private Boolean neutralization;
 
     private String picture;
 
     private String breed;
 
-    private String sex;
-
-    private Boolean isNeuter;
-
-    private String age;
-
-    private Tag tag = new Tag();
+    private PetResponseDto.Tag tag = new PetResponseDto.Tag();
 
     @Data
     static class Tag {
