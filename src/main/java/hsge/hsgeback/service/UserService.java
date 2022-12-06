@@ -67,8 +67,4 @@ public class UserService {
         User user = getUser(request);
         user.setRadius(putDto.getRadius());
     }
-
-
-
-
 }
