@@ -88,4 +88,24 @@ public class PetService {
         }
         return result;
     }
+
+    public PetInfoResponseDto getOnePet(Long petId){
+        Optional<Pet> optional = petRepository.findById(petId);
+        if (optional.isEmpty()){
+            throw new IllegalArgumentException();
+        }
+        Pet pet = optional.get();
+        PetInfoResponseDto dto = new PetInfoResponseDto();
+        dto.setAge(pet.getAge().getKorean());
+        dto.setTag(pet.getLikeTag(), pet.getDislikeTag());
+        dto.setBreed(pet.getBreed().getKorean());
+        dto.setGender(pet.getGender());
+        dto.setDescription(pet.getDescription());
+        dto.setNeutralization(pet.getNeutralization());
+        dto.setPicture(pet.getPicture());
+        dto.setPetName(pet.getPetName());
+        dto.setId(pet.getId());
+        return dto;
+
+    }
 }
