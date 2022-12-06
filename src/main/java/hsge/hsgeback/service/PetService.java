@@ -65,9 +65,9 @@ public class PetService {
         return result;
     }
 
-    public List<PetInfoResponseDto> getAllPet(Long userId){
+    public List<PetInfoResponseDto> getAllPet(Long userId) {
         Optional<User> optional = userRepository.findById(userId);
-        if (optional.isEmpty()){
+        if (optional.isEmpty()) {
             throw new IllegalArgumentException();
         }
         User user = optional.get();
@@ -76,7 +76,7 @@ public class PetService {
         for (Pet pet : pets) {
             PetInfoResponseDto petInfoResponseDto = new PetInfoResponseDto();
             petInfoResponseDto.setPetName(pet.getPetName());
-            petInfoResponseDto.setTag(pet.getLikeTag(),pet.getDislikeTag());
+            petInfoResponseDto.setTag(pet.getLikeTag(), pet.getDislikeTag());
             petInfoResponseDto.setBreed(pet.getBreed().getKorean());
             petInfoResponseDto.setPicture(pet.getPicture());
             petInfoResponseDto.setId(pet.getId());
@@ -89,9 +89,9 @@ public class PetService {
         return result;
     }
 
-    public PetInfoResponseDto getOnePet(Long petId){
+    public PetInfoResponseDto getOnePet(Long petId) {
         Optional<Pet> optional = petRepository.findById(petId);
-        if (optional.isEmpty()){
+        if (optional.isEmpty()) {
             throw new IllegalArgumentException();
         }
         Pet pet = optional.get();
@@ -106,6 +106,25 @@ public class PetService {
         dto.setPetName(pet.getPetName());
         dto.setId(pet.getId());
         return dto;
+    }
 
+    public List<PetInfoResponseDto> getMyPet(HttpServletRequest request){
+        User user = userService.getUser(request);
+        List<Pet> pets = user.getPets();
+        List<PetInfoResponseDto> result = new ArrayList<>();
+        for (Pet pet : pets) {
+            PetInfoResponseDto dto = new PetInfoResponseDto();
+            dto.setAge(pet.getAge().getKorean());
+            dto.setTag(pet.getLikeTag(), pet.getDislikeTag());
+            dto.setBreed(pet.getBreed().getKorean());
+            dto.setGender(pet.getGender());
+            dto.setDescription(pet.getDescription());
+            dto.setNeutralization(pet.getNeutralization());
+            dto.setPicture(pet.getPicture());
+            dto.setPetName(pet.getPetName());
+            dto.setId(pet.getId());
+            result.add(dto);
+        }
+        return result;
     }
 }
