@@ -108,7 +108,7 @@ public class PetService {
         return dto;
     }
 
-    public List<PetInfoResponseDto> getMyPet(HttpServletRequest request){
+    public List<PetInfoResponseDto> getMyPet(HttpServletRequest request) {
         User user = userService.getUser(request);
         List<Pet> pets = user.getPets();
         List<PetInfoResponseDto> result = new ArrayList<>();
@@ -126,5 +126,9 @@ public class PetService {
             result.add(dto);
         }
         return result;
+    }
+
+    public void deletePet(Long petId){
+        petRepository.deleteById(petId);
     }
 }

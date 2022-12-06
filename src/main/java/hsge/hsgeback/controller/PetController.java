@@ -45,9 +45,9 @@ public class PetController {
 
     // GET 본인 반려견 리스트 보기 /api/pets
     @GetMapping("/pets")
-    public ResponseEntity<List<PetInfoResponseDto>> getMyPet(HttpServletRequest request){
+    public ResponseEntity<List<PetInfoResponseDto>> getMyPet(HttpServletRequest request) {
         List<PetInfoResponseDto> myPet = petService.getMyPet(request);
-        return new ResponseEntity<>(myPet,HttpStatus.OK);
+        return new ResponseEntity<>(myPet, HttpStatus.OK);
     }
 
     // POST 본인 반려견 생성 /api/pets
@@ -55,4 +55,8 @@ public class PetController {
     // PUT 반려견 수정 /api/pets/{petId}
 
     // DELETE 반려견 삭제 /api/pets/{petId}
+    @DeleteMapping("/pets/{petId}")
+    public void deletePet(@PathVariable Long petId){
+        petService.deletePet(petId);
+    }
 }
