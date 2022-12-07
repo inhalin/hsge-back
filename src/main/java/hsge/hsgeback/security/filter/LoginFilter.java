@@ -2,12 +2,15 @@ package hsge.hsgeback.security.filter;
 
 import com.google.gson.Gson;
 import hsge.hsgeback.dto.kakao.UserInfo;
+import hsge.hsgeback.exception.TokenException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -55,6 +58,8 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
                 .uri("/v2/user/me")
                 .header("Authorization", "Bearer " + accessToken)
                 .retrieve()
+                .onStatus(HttpStatus::is4xxClientError, response -> Mono.error(new TokenException("Access Token is not valid")))
+                .onStatus(HttpStatus::is5xxServerError, response -> Mono.error(new TokenException("KaKao Server Internal Error")))
                 .bodyToMono(UserInfo.class)
                 .block();
         log.info("getEmail: {}", userInfo);

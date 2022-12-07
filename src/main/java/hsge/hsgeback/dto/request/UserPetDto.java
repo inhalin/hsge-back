@@ -1,14 +1,12 @@
 package hsge.hsgeback.dto.request;
 
 import hsge.hsgeback.constant.Age;
-import hsge.hsgeback.constant.Breed;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data
-public class PutDto {
+public class UserPetDto {
 
     //user
     private String nickname;
