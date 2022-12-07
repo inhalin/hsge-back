@@ -30,12 +30,7 @@ public class PetService {
 
     private final UserService userService;
 
-    @Transactional
-    public void putPet(Long petId, PutDto putDto) {
-        Pet pet = petRepository.findById(petId).orElseThrow(
-                () -> new NoSuchElementException());
-        pet.updatePetInfo(putDto.getPicture(), putDto.getNeutralization(), putDto.getLikeTag(), putDto.getDislikeTag(), putDto.getDescription(), putDto.getAge());
-    }
+
 
     public List<PetResponseDto> findPetByLocation(HttpServletRequest request) {
         User findUser = userService.getUser(request);
@@ -127,9 +122,22 @@ public class PetService {
         return result;
     }
 
+    @Transactional
     public void postPet(HttpServletRequest request, SignupDto signupDto){
         User user = userService.getUser(request);
         petRepository.save(signupDto.toPetEntity(user));
+    }
+
+    @Transactional
+    public void putPet(Long petId, PutDto putDto){
+        Optional<Pet> optional = petRepository.findById(petId);
+        if (optional.isEmpty()){
+            throw new IllegalArgumentException();
+        }
+        Pet pet = optional.get();
+        log.info("name : {}", pet.getPetName());
+        log.info("name : {}", putDto.getPetName());
+        pet.updatePetInfo(putDto.getPetName(),putDto.getGender(),putDto.getBreed(),putDto.getPicture(),putDto.getNeutralization(),putDto.getLikeTag(),putDto.getDislikeTag(),putDto.getDescription(),putDto.getAge());
     }
 
     public void deletePet(Long petId){

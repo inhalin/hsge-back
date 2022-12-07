@@ -22,16 +22,22 @@ public class PutDto {
     private Double radius;
 
     //pet
-    private String picture;
+    private String petName;
+
+    private Age age;
+
+    private String gender;
+
+    private String description;
 
     private Boolean neutralization;
+
+    private String picture;
+
+    private Breed breed;
 
     private String likeTag;
 
     private String dislikeTag;
-
-    private String description;
-
-    private Age age;
 
 }
