@@ -3,6 +3,7 @@ spring:
     multipart:
       max-file-size: 50MB
       max-request-size: 50MB
+      location: /Users/leetaemin/upload/item
   config:
     activate:
       on-profile: dev

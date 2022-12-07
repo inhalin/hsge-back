@@ -1,6 +1,7 @@
 package hsge.hsgeback.dto.request;
 
 import hsge.hsgeback.constant.Age;
+import hsge.hsgeback.constant.Breed;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
