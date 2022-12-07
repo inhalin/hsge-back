@@ -6,6 +6,7 @@ import hsge.hsgeback.dto.response.PetInfoResponseDto;
 import hsge.hsgeback.dto.response.PetResponseDto;
 import hsge.hsgeback.entity.Pet;
 import hsge.hsgeback.entity.User;
+import hsge.hsgeback.exception.NotOwnerException;
 import hsge.hsgeback.repository.PetRepository;
 import hsge.hsgeback.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -129,14 +130,17 @@ public class PetService {
     }
 
     @Transactional
-    public void putPet(Long petId, PutDto putDto){
+    public void updatePet(HttpServletRequest request, Long petId, PutDto putDto){
         Optional<Pet> optional = petRepository.findById(petId);
         if (optional.isEmpty()){
             throw new IllegalArgumentException();
         }
         Pet pet = optional.get();
-        log.info("name : {}", pet.getPetName());
-        log.info("name : {}", putDto.getPetName());
+        Long id = pet.getUser().getId();
+        User user = userService.getUser(request);
+        if (!Objects.equals(id, user.getId())){
+            throw new NotOwnerException("NotOwnerException");
+        }
         pet.updatePetInfo(putDto.getPetName(),putDto.getGender(),putDto.getBreed(),putDto.getPicture(),putDto.getNeutralization(),putDto.getLikeTag(),putDto.getDislikeTag(),putDto.getDescription(),putDto.getAge());
     }
 

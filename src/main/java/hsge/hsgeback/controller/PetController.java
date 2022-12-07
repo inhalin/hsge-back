@@ -57,9 +57,10 @@ public class PetController {
         petService.postPet(request, signupDto);
     }
     // PUT 반려견 수정 /api/pets/{petId}
+    // 본인 강아지 제외해서 수정 시도시 예외처리
     @PutMapping("/pets/{petId}")
-    public void putPet(@PathVariable Long petId, @RequestBody PutDto putDto){
-        petService.putPet(petId, putDto);
+    public void putPet(HttpServletRequest request,@PathVariable Long petId, @RequestBody PutDto putDto){
+        petService.updatePet(request, petId, putDto);
     }
 
     // DELETE 반려견 삭제 /api/pets/{petId}
