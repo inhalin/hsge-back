@@ -1,6 +1,6 @@
 package hsge.hsgeback.controller;
 
-import hsge.hsgeback.dto.request.PutDto;
+import hsge.hsgeback.dto.request.UserPetDto;
 import hsge.hsgeback.service.PetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +17,7 @@ public class PetController {
     private final PetService petService;
 
     @PutMapping("/{petId}")
-    public void putPet(@PathVariable Long petId, @RequestBody PutDto putDto) {
+    public void putPet(@PathVariable Long petId, @RequestBody UserPetDto putDto) {
         petService.putPet(petId, putDto);
     }
 }

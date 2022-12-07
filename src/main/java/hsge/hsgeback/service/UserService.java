@@ -1,9 +1,7 @@
 package hsge.hsgeback.service;
 
 import hsge.hsgeback.dto.request.MypageDto;
-import hsge.hsgeback.dto.request.PutDto;
-import hsge.hsgeback.dto.response.PetResponseDto;
-import hsge.hsgeback.entity.Pet;
+import hsge.hsgeback.dto.request.UserPetDto;
 import hsge.hsgeback.entity.User;
 import hsge.hsgeback.repository.UserRepository;
 import hsge.hsgeback.util.JWTUtil;
@@ -14,8 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -39,7 +35,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUserProfile(HttpServletRequest request, PutDto putDto) {
+    public void updateUserProfile(HttpServletRequest request, UserPetDto putDto) {
         User user = getUser(request);
         user.setNickname(putDto.getNickname());
         user.setProfilePath(putDto.getProfilePath());
@@ -56,15 +52,21 @@ public class UserService {
     }
 
     @Transactional
-    public void updateLocation(HttpServletRequest request, PutDto putDto) {
+    public void updateLocation(HttpServletRequest request, UserPetDto putDto) {
         User user = getUser(request);
         user.setLatitude(putDto.getLatitude());
         user.setLongtitude(putDto.getLongtitude());
     }
 
     @Transactional
-    public void updateRadius(HttpServletRequest request, PutDto putDto) {
+    public void updateRadius(HttpServletRequest request, UserPetDto putDto) {
         User user = getUser(request);
         user.setRadius(putDto.getRadius());
+    }
+
+    @Transactional
+    public void withdraw(HttpServletRequest request) {
+        User user = getUser(request);
+        userRepository.delete(user);
     }
 }

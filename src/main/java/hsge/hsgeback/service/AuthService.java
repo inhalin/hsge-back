@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -27,19 +28,21 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class AuthService {
-    @Value("/Users/leetaemin/upload/item")
+    @Value("${spring.servlet.multipart.location}")
     private String pathName;
     private final UserRepository userRepository;
     private final PetRepository petRepository;
 
+    @Transactional
     public void createInfo(MultipartFile imgFile, SignupDto signupDto) throws IOException {
+        User user = userRepository.save(signupDto.toUserEntity());
+        petRepository.save(signupDto.toPetEntity(user));
+
         UUID uuid = UUID.randomUUID();
         String fileName = uuid + "_" + imgFile.getOriginalFilename();
         File saveFile = new File(pathName, fileName);
         imgFile.transferTo(saveFile);
         log.info("nickname1 : {}", signupDto.getNickname());
-        User user = userRepository.save(signupDto.toUserEntity());
-        petRepository.save(signupDto.toPetEntity(user));
     }
 
     public boolean checkNicknameDuplicate(NicknameDuplicateRequestDto nicknameDto) {

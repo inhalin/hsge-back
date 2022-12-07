@@ -1,6 +1,7 @@
 package hsge.hsgeback.config;
 
 import hsge.hsgeback.security.KakaoUserDetailService;
+import hsge.hsgeback.security.filter.ExceptionHandlerFilter;
 import hsge.hsgeback.security.filter.LoginFilter;
 import hsge.hsgeback.security.filter.TokenCheckFilter;
 import hsge.hsgeback.security.handler.LoginFailureHandler;
@@ -61,6 +62,8 @@ public class SecurityConfig {
         AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
 
         http.authenticationManager(authenticationManager);
+
+        http.addFilterBefore(new ExceptionHandlerFilter(), UsernamePasswordAuthenticationFilter.class);
 
         LoginFilter loginFilter = new LoginFilter("/api/auth/login", webClient);
         loginFilter.setAuthenticationManager(authenticationManager);
