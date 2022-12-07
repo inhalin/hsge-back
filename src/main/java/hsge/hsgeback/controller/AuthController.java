@@ -25,22 +25,18 @@ public class AuthController {
 
     @PostMapping(value = "/api/auth/signup", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public void signup(@RequestPart MultipartFile imgFile, @RequestPart SignupDto signupDto) throws IOException {
-        log.info("nicknam33321321 : {}", signupDto.getNickname());
         authService.createInfo(imgFile, signupDto);
     }
 
-    @GetMapping("/api/auth/duplicate-nickname")
+    @PostMapping("/api/auth/duplicate-nickname")
     public ResponseEntity<NicknameDuplicateResponseDto> checkDuplicateNickname(@RequestBody NicknameDuplicateRequestDto nicknameDto) {
-        HttpStatus status;
         NicknameDuplicateResponseDto dto = new NicknameDuplicateResponseDto();
         if (authService.checkNicknameDuplicate(nicknameDto)) {
-            status = HttpStatus.BAD_REQUEST;
             dto.setData(false);
         } else {
-            status = HttpStatus.OK;
             dto.setData(true);
         }
-        return new ResponseEntity<>(dto, status);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @GetMapping("/api/common/breed")
