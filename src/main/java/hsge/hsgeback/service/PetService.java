@@ -1,6 +1,6 @@
 package hsge.hsgeback.service;
 
-import hsge.hsgeback.dto.request.PutDto;
+import hsge.hsgeback.dto.request.UserPetDto;
 import hsge.hsgeback.entity.Pet;
 import hsge.hsgeback.repository.PetRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +18,13 @@ public class PetService {
     private final PetRepository petRepository;
 
     @Transactional
-    public void putPet(Long petId, PutDto putDto) {
+    public void putPet(Long petId, UserPetDto userPetDto) {
         Pet pet = petRepository.findById(petId).orElseThrow(NoSuchElementException::new);
-        pet.updatePetInfo(putDto.getPicture(),
-                putDto.getNeutralization(),
-                putDto.getLikeTag(),
-                putDto.getDislikeTag(),
-                putDto.getDescription(),
-                putDto.getAge());
+        pet.updatePetInfo(userPetDto.getPicture(),
+                userPetDto.getNeutralization(),
+                userPetDto.getLikeTag(),
+                userPetDto.getDislikeTag(),
+                userPetDto.getDescription(),
+                userPetDto.getAge());
     }
 }
