@@ -24,13 +24,8 @@ public class UserController {
     }
 
     @PutMapping
-    public void updateMyProfile(HttpServletRequest request, UserPetDto userPetDto) {
+    public void updateMyProfile(HttpServletRequest request, @RequestBody UserPetDto userPetDto) {
         userService.updateUserProfile(request, userPetDto);
-    }
-
-    @PutMapping
-    public void updateUserNickname(HttpServletRequest request, @RequestBody UserPetDto putDto) {
-        userService.updateUserProfile(request, putDto);
     }
 
     @PutMapping("/radius")

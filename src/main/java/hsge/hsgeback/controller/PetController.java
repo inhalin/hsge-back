@@ -1,13 +1,21 @@
 package hsge.hsgeback.controller;
 
+import hsge.hsgeback.dto.request.SignupDto;
 import hsge.hsgeback.dto.request.UserPetDto;
+import hsge.hsgeback.dto.response.PetInfoResponseDto;
+import hsge.hsgeback.dto.response.PetResponseDto;
 import hsge.hsgeback.service.PetService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/pets")
+@RequestMapping("/api")
 public class PetController {
 
     /**
@@ -16,8 +24,48 @@ public class PetController {
      */
     private final PetService petService;
 
-    @PutMapping("/{petId}")
-    public void putPet(@PathVariable Long petId, @RequestBody UserPetDto putDto) {
-        petService.putPet(petId, putDto);
+    @GetMapping("/pets/area")
+    public ResponseEntity<List<PetResponseDto>> findAllUser(HttpServletRequest request) {
+        List<PetResponseDto> dto = petService.findPetByLocation(request);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    // GET 특정 유저의 반려견 리스트 /api/users/{userId}/pets
+    @GetMapping("/users/{userId}/pets")
+    public ResponseEntity<List<PetInfoResponseDto>> getPets(@PathVariable Long userId) {
+        List<PetInfoResponseDto> petList = petService.getAllPet(userId);
+        return new ResponseEntity<>(petList, HttpStatus.OK);
+    }
+
+    // GET 특정 반려견 보기 /api/pets/{petId}
+    @GetMapping("/pets/{petId}")
+    public ResponseEntity<PetInfoResponseDto> getOnePet(@PathVariable Long petId) {
+        PetInfoResponseDto pet = petService.getOnePet(petId);
+        return new ResponseEntity<>(pet, HttpStatus.OK);
+    }
+
+    // GET 본인 반려견 리스트 보기 /api/pets
+    @GetMapping("/pets")
+    public ResponseEntity<List<PetInfoResponseDto>> getMyPet(HttpServletRequest request) {
+        List<PetInfoResponseDto> myPet = petService.getMyPet(request);
+        return new ResponseEntity<>(myPet, HttpStatus.OK);
+    }
+
+    // POST 본인 반려견 생성 /api/pets
+    @PostMapping("/pets")
+    public void postPet(HttpServletRequest request, @RequestBody SignupDto signupDto) {
+        petService.postPet(request, signupDto);
+    }
+    // PUT 반려견 수정 /api/pets/{petId}
+    // 본인 강아지 제외해서 수정 시도시 예외처리
+    @PutMapping("/pets/{petId}")
+    public void putPet(HttpServletRequest request,@PathVariable Long petId, @RequestBody UserPetDto userPetDto){
+        petService.updatePet(request, petId, userPetDto);
+    }
+
+    // DELETE 반려견 삭제 /api/pets/{petId}
+    @DeleteMapping("/pets/{petId}")
+    public void deletePet(@PathVariable Long petId) {
+        petService.deletePet(petId);
     }
 }
