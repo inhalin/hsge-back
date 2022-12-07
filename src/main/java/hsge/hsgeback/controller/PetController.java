@@ -1,6 +1,6 @@
 package hsge.hsgeback.controller;
 
-import hsge.hsgeback.dto.request.PutDto;
+import hsge.hsgeback.dto.request.SignupDto;
 import hsge.hsgeback.dto.response.PetInfoResponseDto;
 import hsge.hsgeback.dto.response.PetResponseDto;
 import hsge.hsgeback.service.PetService;
@@ -51,12 +51,15 @@ public class PetController {
     }
 
     // POST 본인 반려견 생성 /api/pets
-
+    @PostMapping("/pets")
+    public void postPet(HttpServletRequest request, @RequestBody SignupDto signupDto) {
+        petService.postPet(request, signupDto);
+    }
     // PUT 반려견 수정 /api/pets/{petId}
 
     // DELETE 반려견 삭제 /api/pets/{petId}
     @DeleteMapping("/pets/{petId}")
-    public void deletePet(@PathVariable Long petId){
+    public void deletePet(@PathVariable Long petId) {
         petService.deletePet(petId);
     }
 }

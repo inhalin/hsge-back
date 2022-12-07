@@ -1,6 +1,7 @@
 package hsge.hsgeback.service;
 
 import hsge.hsgeback.dto.request.PutDto;
+import hsge.hsgeback.dto.request.SignupDto;
 import hsge.hsgeback.dto.response.PetInfoResponseDto;
 import hsge.hsgeback.dto.response.PetResponseDto;
 import hsge.hsgeback.entity.Pet;
@@ -9,8 +10,6 @@ import hsge.hsgeback.repository.PetRepository;
 import hsge.hsgeback.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -126,6 +125,11 @@ public class PetService {
             result.add(dto);
         }
         return result;
+    }
+
+    public void postPet(HttpServletRequest request, SignupDto signupDto){
+        User user = userService.getUser(request);
+        petRepository.save(signupDto.toPetEntity(user));
     }
 
     public void deletePet(Long petId){
