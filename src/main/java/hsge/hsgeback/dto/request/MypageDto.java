@@ -15,4 +15,6 @@ public class MypageDto {
 
     private Double longtitude;
 
+    private String town;
+
 }

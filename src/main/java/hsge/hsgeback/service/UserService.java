@@ -32,6 +32,7 @@ public class UserService {
         User user = optional.get();
         MypageDto mypageDto = new MypageDto();
         mypageDto.setNickname(user.getNickname());
+        mypageDto.setTown(user.getTown());
         mypageDto.setProfilePath(user.getProfilePath());
         mypageDto.setLatitude(user.getLatitude());
         mypageDto.setLongtitude(user.getLongtitude());
@@ -60,14 +61,15 @@ public class UserService {
     }
 
     @Transactional
-    public void updateLocation(String email, UserPetDto putDto) {
+    public void updateLocation(String email, UserPetDto userPetDto) {
         Optional<User> optional = userRepository.findByEmail(email);
         if (optional.isEmpty()) {
             throw new IllegalArgumentException();
         }
         User user = optional.get();
-        user.setLatitude(putDto.getLatitude());
-        user.setLongtitude(putDto.getLongtitude());
+        user.setTown(userPetDto.getTown());
+        user.setLatitude(userPetDto.getLatitude());
+        user.setLongtitude(userPetDto.getLongtitude());
     }
 
     @Transactional
