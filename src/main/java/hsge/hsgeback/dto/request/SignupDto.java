@@ -29,6 +29,8 @@ public class SignupDto {
 
     private int profilePath;
 
+    private String town;
+
     //pet
     private Long petId;
 
@@ -40,7 +42,7 @@ public class SignupDto {
 
     private Boolean neutralization;
 
-    private String Picture;
+    private String picture;
 
     @Enumerated(EnumType.STRING)
     private Age age;
@@ -52,35 +54,38 @@ public class SignupDto {
 
     private String dislikeTag; // 싫어요 태그
 
-    @Builder
-    public SignupDto(Long userId, String email, String nickname, Double latitude, Double longtitude, int profilePath, Long petId, String petName, String gender, String description, Boolean neutralization, String picture, Age age, Breed breed, String likeTag, String dislikeTag) {
+    public SignupDto(Long userId, String email, String nickname, Double latitude, Double longtitude, int profilePath, String town, Long petId, String petName, String gender, String description, Boolean neutralization, String picture, Age age, Breed breed, String likeTag, String dislikeTag) {
         this.userId = userId;
         this.email = email;
         this.nickname = nickname;
         this.latitude = latitude;
         this.longtitude = longtitude;
         this.profilePath = profilePath;
+        this.town = town;
         this.petId = petId;
         this.petName = petName;
         this.gender = gender;
         this.description = description;
         this.neutralization = neutralization;
-        this.Picture = picture;
+        this.picture = picture;
         this.age = age;
         this.breed = breed;
         this.likeTag = likeTag;
         this.dislikeTag = dislikeTag;
-
     }
 
+    @Builder
+
+
     public User toUserEntity() {
-        log.info("nickname : {}",getNickname());
+        log.info("nickname : {}", getNickname());
         return User.builder()
                 .nickname(getNickname())
                 .latitude(getLatitude())
                 .longtitude(getLongtitude())
                 .profilePath(getProfilePath())
                 .email(getEmail())
+                .town(getTown())
                 .build();
     }
 

@@ -34,12 +34,6 @@ public class UserController {
         userService.updateUserProfile(email, userPetDto);
     }
 
-    @PutMapping
-    public void updateUserNickname(HttpServletRequest request, @RequestBody UserPetDto putDto) {
-        String email = jwtUtil.getEmail(request);
-        userService.updateUserProfile(email, putDto);
-    }
-
     @PutMapping("/radius")
     public void updateUserRadius(HttpServletRequest request, @RequestBody UserPetDto putDto) {
         String email = jwtUtil.getEmail(request);

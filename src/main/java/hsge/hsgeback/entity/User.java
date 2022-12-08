@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Entity
 @DynamicInsert
-public class User extends BaseEntity{
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +34,8 @@ public class User extends BaseEntity{
     private Double longtitude;
 
     private String role;
+
+    private String town;
 
     private int profilePath;
 
@@ -62,7 +64,7 @@ public class User extends BaseEntity{
     private List<Message> messageList = new ArrayList<>();
 
     @Builder
-    public User(Long id, String email, String nickname, String password, Double latitude, Double longtitude, String role, int profilePath, Double radius, List<Pet> pets, List<Report> reporter, List<Report> reportee, List<Match> matchList, List<Chatroom> likeUser, List<Chatroom> likedUser, List<Message> messageList) {
+    public User(Long id, String email, String nickname, String password, Double latitude, Double longtitude, String role, String town, int profilePath, Double radius, List<Pet> pets, List<Report> reporter, List<Report> reportee, List<Match> matchList, List<Chatroom> likeUser, List<Chatroom> likedUser, List<Message> messageList) {
         this.id = id;
         this.email = email;
         this.nickname = nickname;
@@ -70,6 +72,7 @@ public class User extends BaseEntity{
         this.latitude = latitude;
         this.longtitude = longtitude;
         this.role = role;
+        this.town = town;
         this.profilePath = profilePath;
         this.radius = radius;
         this.pets = pets;
@@ -99,5 +102,9 @@ public class User extends BaseEntity{
 
     public void setRadius(Double radius) {
         this.radius = radius;
+    }
+
+    public void setTown(String town) {
+        this.town = town;
     }
 }
