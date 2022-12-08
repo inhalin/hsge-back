@@ -13,5 +13,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
 
     Optional<User> findByEmail(String email);
+
+    Optional<User> deleteByEmail(String email);
+
     List<User> findByLatitudeBetweenAndLongtitudeBetween(Double startLatitude, Double endLatitude, Double startLongtitude, Double endLongtitude);
 }

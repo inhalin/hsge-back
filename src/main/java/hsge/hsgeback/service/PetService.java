@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -29,11 +28,13 @@ public class PetService {
 
     private final UserRepository userRepository;
 
-    private final UserService userService;
 
-
-    public List<PetResponseDto> findPetByLocation(HttpServletRequest request) {
-        User findUser = userService.getUser(request);
+    public List<PetResponseDto> findPetByLocation(String email) {
+        Optional<User> optional = userRepository.findByEmail(email);
+        if (optional.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        User findUser = optional.get();
         Double currentLatitude = findUser.getLatitude();
         Double currentLongtitude = findUser.getLongtitude();
         Double startLatitude = currentLatitude - findUser.getRadius();
@@ -102,8 +103,12 @@ public class PetService {
         return dto;
     }
 
-    public List<PetInfoResponseDto> getMyPet(HttpServletRequest request) {
-        User user = userService.getUser(request);
+    public List<PetInfoResponseDto> getMyPet(String email) {
+        Optional<User> optional = userRepository.findByEmail(email);
+        if (optional.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        User user = optional.get();
         List<Pet> pets = user.getPets();
         List<PetInfoResponseDto> result = new ArrayList<>();
         for (Pet pet : pets) {
@@ -123,20 +128,28 @@ public class PetService {
     }
 
     @Transactional
-    public void postPet(HttpServletRequest request, SignupDto signupDto) {
-        User user = userService.getUser(request);
+    public void postPet(String email, SignupDto signupDto) {
+        Optional<User> optional = userRepository.findByEmail(email);
+        if (optional.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        User user = optional.get();
         petRepository.save(signupDto.toPetEntity(user));
     }
 
     @Transactional
-    public void updatePet(HttpServletRequest request, Long petId, UserPetDto userPetDto) {
-        Optional<Pet> optional = petRepository.findById(petId);
-        if (optional.isEmpty()) {
+    public void updatePet(String email, Long petId, UserPetDto userPetDto) {
+        Optional<Pet> optionalPet = petRepository.findById(petId);
+        if (optionalPet.isEmpty()) {
             throw new IllegalArgumentException();
         }
-        Pet pet = optional.get();
+        Pet pet = optionalPet.get();
         Long id = pet.getUser().getId();
-        User user = userService.getUser(request);
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (optionalUser.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        User user = optionalUser.get();
         if (!Objects.equals(id, user.getId())) {
             throw new NotOwnerException("NotOwnerException");
         }

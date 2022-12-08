@@ -5,6 +5,7 @@ import hsge.hsgeback.dto.request.UserPetDto;
 import hsge.hsgeback.dto.response.PetInfoResponseDto;
 import hsge.hsgeback.dto.response.PetResponseDto;
 import hsge.hsgeback.service.PetService;
+import hsge.hsgeback.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +25,12 @@ public class PetController {
      */
     private final PetService petService;
 
+    private final JWTUtil jwtUtil;
+
     @GetMapping("/pets/area")
     public ResponseEntity<List<PetResponseDto>> findAllUser(HttpServletRequest request) {
-        List<PetResponseDto> dto = petService.findPetByLocation(request);
+        String email = jwtUtil.getEmail(request);
+        List<PetResponseDto> dto = petService.findPetByLocation(email);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
@@ -47,20 +51,24 @@ public class PetController {
     // GET 본인 반려견 리스트 보기 /api/pets
     @GetMapping("/pets")
     public ResponseEntity<List<PetInfoResponseDto>> getMyPet(HttpServletRequest request) {
-        List<PetInfoResponseDto> myPet = petService.getMyPet(request);
+        String email = jwtUtil.getEmail(request);
+        List<PetInfoResponseDto> myPet = petService.getMyPet(email);
         return new ResponseEntity<>(myPet, HttpStatus.OK);
     }
 
     // POST 본인 반려견 생성 /api/pets
     @PostMapping("/pets")
     public void postPet(HttpServletRequest request, @RequestBody SignupDto signupDto) {
-        petService.postPet(request, signupDto);
+        String email = jwtUtil.getEmail(request);
+        petService.postPet(email, signupDto);
     }
+
     // PUT 반려견 수정 /api/pets/{petId}
     // 본인 강아지 제외해서 수정 시도시 예외처리
     @PutMapping("/pets/{petId}")
-    public void putPet(HttpServletRequest request,@PathVariable Long petId, @RequestBody UserPetDto userPetDto){
-        petService.updatePet(request, petId, userPetDto);
+    public void putPet(HttpServletRequest request, @PathVariable Long petId, @RequestBody UserPetDto userPetDto) {
+        String email = jwtUtil.getEmail(request);
+        petService.updatePet(email, petId, userPetDto);
     }
 
     // DELETE 반려견 삭제 /api/pets/{petId}

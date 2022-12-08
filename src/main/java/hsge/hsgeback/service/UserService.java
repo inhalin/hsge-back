@@ -24,8 +24,12 @@ public class UserService {
     private final JWTUtil jwtUtil;
 
 
-    public MypageDto getUserProfile(HttpServletRequest request){
-        User user = getUser(request);
+    public MypageDto getUserProfile(String email) {
+        Optional<User> optional = userRepository.findByEmail(email);
+        if (optional.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        User user = optional.get();
         MypageDto mypageDto = new MypageDto();
         mypageDto.setNickname(user.getNickname());
         mypageDto.setProfilePath(user.getProfilePath());
@@ -35,10 +39,14 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUserProfile(HttpServletRequest request, UserPetDto putDto) {
-        User user = getUser(request);
-        user.setNickname(putDto.getNickname());
-        user.setProfilePath(putDto.getProfilePath());
+    public void updateUserProfile(String email, UserPetDto userPetDto) {
+        Optional<User> optional = userRepository.findByEmail(email);
+        if (optional.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        User user = optional.get();
+        user.setNickname(userPetDto.getNickname());
+        user.setProfilePath(userPetDto.getProfilePath());
     }
 
     public User getUser(HttpServletRequest request) {
@@ -52,21 +60,31 @@ public class UserService {
     }
 
     @Transactional
-    public void updateLocation(HttpServletRequest request, UserPetDto putDto) {
-        User user = getUser(request);
+    public void updateLocation(String email, UserPetDto putDto) {
+        Optional<User> optional = userRepository.findByEmail(email);
+        if (optional.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        User user = optional.get();
         user.setLatitude(putDto.getLatitude());
         user.setLongtitude(putDto.getLongtitude());
     }
 
     @Transactional
-    public void updateRadius(HttpServletRequest request, UserPetDto putDto) {
-        User user = getUser(request);
+    public void updateRadius(String email, UserPetDto putDto) {
+        Optional<User> optional = userRepository.findByEmail(email);
+        if (optional.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        User user = optional.get();
         user.setRadius(putDto.getRadius());
     }
 
     @Transactional
-    public void withdraw(HttpServletRequest request) {
-        User user = getUser(request);
-        userRepository.delete(user);
+    public void withdraw(String email) {
+        userRepository.deleteByEmail(email);
     }
+
+//    @Transactional
+//    public void
 }
