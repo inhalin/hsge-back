@@ -3,12 +3,14 @@ package hsge.hsgeback.config;
 import hsge.hsgeback.security.KakaoUserDetailService;
 import hsge.hsgeback.security.filter.ExceptionHandlerFilter;
 import hsge.hsgeback.security.filter.LoginFilter;
+import hsge.hsgeback.security.filter.RefreshTokenFilter;
 import hsge.hsgeback.security.filter.TokenCheckFilter;
 import hsge.hsgeback.security.handler.LoginFailureHandler;
 import hsge.hsgeback.security.handler.LoginSuccessHandler;
 import hsge.hsgeback.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,8 +52,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        log.info("======Security Config=====");
-
         AuthenticationManagerBuilder authenticationManagerBuilder =
                 http.getSharedObject(AuthenticationManagerBuilder.class);
 
@@ -73,6 +73,7 @@ public class SecurityConfig {
         http.addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.addFilterBefore(tokenCheckFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new RefreshTokenFilter("/api/auth/refresh-token", jwtUtil), TokenCheckFilter.class);
 
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

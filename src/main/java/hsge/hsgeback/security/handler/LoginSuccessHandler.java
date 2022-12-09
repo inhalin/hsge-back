@@ -26,12 +26,9 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
-        log.info("authentication: {}", authentication);
-        log.info("authentication.getName: {}", authentication.getName());
-
         Map<String, Object> claim = Map.of("email", authentication.getName());
-        String accessToken = jwtUtil.generateToken(claim, 1);
-        String refreshToken = jwtUtil.generateToken(claim, 1);
+        String accessToken = jwtUtil.generateAccessToken(claim);
+        String refreshToken = jwtUtil.generateRefreshToken(claim);
 
         Gson gson = new Gson();
 

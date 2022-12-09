@@ -33,16 +33,12 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
 
-        log.info("=======LoginFilter======");
-
         if (request.getMethod().equals("GET")) {
             log.info("GET METHOD NOT SUPPORT");
             return null;
         }
 
         Map<String, String> jsonData = parseRequestJSON(request);
-
-        log.info("jsonData: {}", jsonData);
 
         String accessToken = jsonData.get("accessToken");
         String email = getEmail(accessToken);
@@ -62,7 +58,6 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
                 .onStatus(HttpStatus::is5xxServerError, response -> Mono.error(new TokenException("KaKao Server Internal Error")))
                 .bodyToMono(UserInfo.class)
                 .block();
-        log.info("getEmail: {}", userInfo);
         return userInfo.getEmail();
     }
 

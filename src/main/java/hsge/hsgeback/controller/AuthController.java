@@ -4,6 +4,7 @@ import hsge.hsgeback.dto.request.NicknameDuplicateRequestDto;
 import hsge.hsgeback.dto.request.SignupDto;
 import hsge.hsgeback.dto.response.BaseResponseDto;
 import hsge.hsgeback.dto.response.NicknameDuplicateResponseDto;
+import hsge.hsgeback.dto.response.SignupTokenResponseDto;
 import hsge.hsgeback.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,14 +25,15 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping(value = "/api/auth/signup", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public void signup(@RequestPart MultipartFile imgFile, @RequestPart SignupDto signupDto) throws IOException {
-        authService.createInfo(imgFile, signupDto);
+    public ResponseEntity<SignupTokenResponseDto> signup(@RequestPart MultipartFile imgFile, @RequestPart SignupDto signupDto) throws IOException {
+        SignupTokenResponseDto dto = authService.createInfo(imgFile, signupDto);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @PostMapping("/api/auth/duplicate-nickname")
     public ResponseEntity<NicknameDuplicateResponseDto> checkDuplicateNickname(@RequestBody NicknameDuplicateRequestDto nicknameDto) {
         NicknameDuplicateResponseDto dto = new NicknameDuplicateResponseDto();
-        if (authService.checkNicknameDuplicate(nicknameDto)) {
+        if (authService.checkNicknameDuplicate(nicknameDto.getNickname())) {
             dto.setData(false);
         } else {
             dto.setData(true);
