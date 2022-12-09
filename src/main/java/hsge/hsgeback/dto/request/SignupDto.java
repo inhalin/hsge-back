@@ -54,6 +54,7 @@ public class SignupDto {
 
     private String dislikeTag; // 싫어요 태그
 
+    @Builder
     public SignupDto(Long userId, String email, String nickname, Double latitude, Double longtitude, int profilePath, String town, Long petId, String petName, String gender, String description, Boolean neutralization, String picture, Age age, Breed breed, String likeTag, String dislikeTag) {
         this.userId = userId;
         this.email = email;
@@ -73,8 +74,6 @@ public class SignupDto {
         this.likeTag = likeTag;
         this.dislikeTag = dislikeTag;
     }
-
-    @Builder
 
 
     public User toUserEntity() {

@@ -1,8 +1,10 @@
 package hsge.hsgeback.service;
 
 import hsge.hsgeback.dto.request.MypageDto;
+import hsge.hsgeback.dto.request.ReportDto;
 import hsge.hsgeback.dto.request.UserPetDto;
 import hsge.hsgeback.entity.User;
+import hsge.hsgeback.repository.ReportRepository;
 import hsge.hsgeback.repository.UserRepository;
 import hsge.hsgeback.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,8 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+
+    private final ReportRepository reportRepository;
     private final JWTUtil jwtUtil;
 
 
@@ -87,6 +91,18 @@ public class UserService {
         userRepository.deleteByEmail(email);
     }
 
-//    @Transactional
-//    public void
+    @Transactional
+    public void reportUser(String email, ReportDto reportDto) {
+        Optional<User> optional = userRepository.findByEmail(email);
+        if (optional.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        User reporter = optional.get();
+        Optional<User> optional1 = userRepository.findById(reportDto.getReportee());
+        if (optional1.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        User reportee = optional1.get();
+        reportRepository.save(reportDto.toReportEntity(reporter, reportee));
+    }
 }
