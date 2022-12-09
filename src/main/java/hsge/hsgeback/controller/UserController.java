@@ -1,6 +1,7 @@
 package hsge.hsgeback.controller;
 
 import hsge.hsgeback.dto.request.MypageDto;
+import hsge.hsgeback.dto.request.ReportDto;
 import hsge.hsgeback.dto.request.UserPetDto;
 import hsge.hsgeback.entity.User;
 import hsge.hsgeback.service.UserService;
@@ -52,5 +53,9 @@ public class UserController {
         userService.withdraw(email);
     }
 
-//    @PostMapping("/")
+    @PostMapping("/report")
+    public void reportUser(HttpServletRequest request, @RequestBody ReportDto reportDto) {
+        String email = jwtUtil.getEmail(request);
+        userService.reportUser(email, reportDto);
+    }
 }
