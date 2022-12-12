@@ -3,3 +3,9 @@ spring:
     include:
       - SECRET
     active: prod
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+      location: ${user.home}/images

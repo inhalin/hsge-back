@@ -1,16 +1,11 @@
 spring:
-  servlet:
-    multipart:
-      max-file-size: 50MB
-      max-request-size: 50MB
-      location: /Users/leetaemin/upload/item
   config:
     activate:
       on-profile: dev
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true
 
   datasource:
