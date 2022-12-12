@@ -11,7 +11,7 @@ import java.util.List;
 @Slf4j
 public class PetResponseDto {
 
-가    private Long petId;
+    private Long petId;
 
     private String name;
 
