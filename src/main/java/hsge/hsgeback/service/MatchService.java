@@ -1,29 +1,36 @@
 package hsge.hsgeback.service;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
+import hsge.hsgeback.dto.match.UserPetMatchDto;
 import hsge.hsgeback.entity.Match;
 import hsge.hsgeback.entity.Pet;
 import hsge.hsgeback.entity.User;
-import hsge.hsgeback.exception.ResourceNotFoundException;
 import hsge.hsgeback.repository.MatchRepository;
-import hsge.hsgeback.repository.PetRepository;
-import hsge.hsgeback.repository.UserRepository;
+import hsge.hsgeback.repository.PetCustomRepository;
+import hsge.hsgeback.repository.UserCustomRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static hsge.hsgeback.constant.PushNotification.LIKE_BODY;
+import static hsge.hsgeback.constant.PushNotification.LIKE_TITLE;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MatchService {
 
     private final MatchRepository matchRepository;
-    private final UserRepository userRepository;
-    private final PetRepository petRepository;
+    private final UserCustomRepository userRepository;
+    private final PetCustomRepository petRepository;
+    private final FcmService fcmService;
 
     @Transactional
-    public void setUserToPetInterest(String userEmail, Long petId, Boolean likeValue) {
-        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User", "email", userEmail));
-        Pet pet = petRepository.findById(petId).orElseThrow(() -> new ResourceNotFoundException("Pet", "id", petId.toString()));
+    public UserPetMatchDto saveMatch(String userEmail, Long petId, Boolean likeValue) {
+        User user = userRepository.findByEmail(userEmail);
+        Pet pet = petRepository.findById(petId);
 
         Match match = Match.builder()
                 .user(user)
@@ -32,6 +39,24 @@ public class MatchService {
                 .build();
         matchRepository.save(match);
 
-        // TODO: 좋아요 받은 사람에게 푸쉬 알림 보내기 & 채팅방 생성(상단 목록에만 보이는 상태)
+        return UserPetMatchDto.builder()
+                .likerNickname(user.getNickname())
+                .petName(pet.getPetName())
+                .petOwnerEmail(pet.getUser().getEmail())
+                .build();
+    }
+
+    public void sendMatchNotification(UserPetMatchDto matchDto) throws FirebaseMessagingException {
+        User user = userRepository.findByEmail(matchDto.getPetOwnerEmail());
+
+        String fcmToken = userRepository.getFcmTokenByEmail(user.getEmail());
+
+        String title = LIKE_TITLE.getContent(matchDto.getPetName());
+        String body = LIKE_BODY.getContent(matchDto.getLikerNickname());
+
+        log.debug("FCM Message: 강아지 좋아요 푸시 알림");
+        log.debug("title = {}, body = {}", title, body);
+
+        fcmService.sendMessageTo(fcmToken, title, body);
     }
 }
