@@ -5,6 +5,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +18,22 @@ import java.util.Map;
 @Component
 public class JWTUtil {
 
-    private String key = "abcd1234";
+    @Value("${secret.jwt.expire-days}")
+    private int expireDays;
+
+    @Value("${secret.jwt.refresh-days}")
+    private int refreshDays;
+
+    @Value("${secret.jwt.hash-key}")
+    private String key;
+
+    public String generateAccessToken(Map<String, Object> valueMap) {
+        return generateToken(valueMap, expireDays);
+    }
+
+    public String generateRefreshToken(Map<String, Object> valueMap) {
+        return generateToken(valueMap, refreshDays);
+    }
 
     public String generateToken(Map<String, Object> valueMap, int days) {
 

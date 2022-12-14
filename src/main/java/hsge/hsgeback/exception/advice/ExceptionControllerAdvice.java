@@ -1,6 +1,7 @@
 package hsge.hsgeback.exception.advice;
 
 import hsge.hsgeback.exception.BadWebClientRequestException;
+import hsge.hsgeback.exception.NicknameDuplicateException;
 import hsge.hsgeback.exception.NotOwnerException;
 import hsge.hsgeback.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -20,19 +21,25 @@ public class ExceptionControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BadWebClientRequestException.class)
-    public ErrorResult badWebClientRequestException(BadWebClientRequestException e) {
+    public ErrorResult handleBadWebClientRequestException(BadWebClientRequestException e) {
         return new ErrorResult(e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ErrorResult usernameNotFoundException(UsernameNotFoundException e) {
+    public ErrorResult handleUsernameNotFoundException(UsernameNotFoundException e) {
+        return new ErrorResult(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(NicknameDuplicateException.class)
+    public ErrorResult handleNicknameDuplicateException(NicknameDuplicateException e) {
         return new ErrorResult(e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(NotOwnerException.class)
-    public ErrorResult notOwnerException(NotOwnerException e) {
+    public ErrorResult handleNotOwnerException(NotOwnerException e) {
         return new ErrorResult(e.getMessage());
     }
 

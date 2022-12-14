@@ -2,14 +2,16 @@ package hsge.hsgeback.service;
 
 import hsge.hsgeback.constant.Age;
 import hsge.hsgeback.constant.Breed;
-import hsge.hsgeback.dto.request.NicknameDuplicateRequestDto;
 import hsge.hsgeback.dto.request.SignupDto;
 import hsge.hsgeback.dto.response.AgeDto;
 import hsge.hsgeback.dto.response.BaseResponseDto;
 import hsge.hsgeback.dto.response.BreedDto;
+import hsge.hsgeback.dto.response.SignupTokenResponseDto;
 import hsge.hsgeback.entity.User;
+import hsge.hsgeback.exception.NicknameDuplicateException;
 import hsge.hsgeback.repository.PetRepository;
 import hsge.hsgeback.repository.UserRepository;
+import hsge.hsgeback.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,10 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -32,9 +31,13 @@ public class AuthService {
     private String pathName;
     private final UserRepository userRepository;
     private final PetRepository petRepository;
+    private final JWTUtil jwtUtil;
 
     @Transactional
-    public void createInfo(MultipartFile imgFile, SignupDto signupDto) throws IOException {
+    public SignupTokenResponseDto createInfo(MultipartFile imgFile, SignupDto signupDto) throws IOException {
+        if (checkNicknameDuplicate(signupDto.getNickname())) {
+            throw new NicknameDuplicateException("존재하는 닉네임입니다.");
+        }
         User user = userRepository.save(signupDto.toUserEntity());
         petRepository.save(signupDto.toPetEntity(user));
 
@@ -42,11 +45,13 @@ public class AuthService {
         String fileName = uuid + "_" + imgFile.getOriginalFilename();
         File saveFile = new File(pathName, fileName);
         imgFile.transferTo(saveFile);
-        log.info("nickname1 : {}", signupDto.getNickname());
+        String accessToken = jwtUtil.generateAccessToken(Map.of("email", signupDto.getEmail()));
+        String refreshToken = jwtUtil.generateRefreshToken(Map.of("email", signupDto.getEmail()));
+        return new SignupTokenResponseDto(accessToken, refreshToken);
     }
 
-    public boolean checkNicknameDuplicate(NicknameDuplicateRequestDto nicknameDto) {
-        return userRepository.existsByNickname(nicknameDto.getNickname());
+    public boolean checkNicknameDuplicate(String nickname) {
+        return userRepository.existsByNickname(nickname);
     }
 
     public BaseResponseDto<List<Object>> getBreed() {

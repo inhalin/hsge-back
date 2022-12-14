@@ -22,11 +22,11 @@ public class AccessTokenException extends RuntimeException {
         EXPIRED(403, "Expired Token");
 
         private int status;
-        private String msg;
+        private String message;
 
-        TOKEN_ERROR(int status, String msg) {
+        TOKEN_ERROR(int status, String message) {
             this.status = status;
-            this.msg = msg;
+            this.message = message;
         }
     }
 
@@ -42,7 +42,7 @@ public class AccessTokenException extends RuntimeException {
 
         Gson gson = new Gson();
 
-        String responseStr = gson.toJson(Map.of("msg", tokenError.getMsg(),
+        String responseStr = gson.toJson(Map.of("message", tokenError.getMessage(),
                 "time", new Date()));
 
         try {

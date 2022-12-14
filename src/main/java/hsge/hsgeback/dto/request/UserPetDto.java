@@ -20,6 +20,8 @@ public class UserPetDto {
 
     private Double radius;
 
+    private String town;
+
     //pet
     private String petName;
 

@@ -1,8 +1,10 @@
 package hsge.hsgeback.service;
 
 import hsge.hsgeback.dto.request.MypageDto;
+import hsge.hsgeback.dto.request.ReportDto;
 import hsge.hsgeback.dto.request.UserPetDto;
 import hsge.hsgeback.entity.User;
+import hsge.hsgeback.repository.ReportRepository;
 import hsge.hsgeback.repository.UserRepository;
 import hsge.hsgeback.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,8 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+
+    private final ReportRepository reportRepository;
     private final JWTUtil jwtUtil;
 
 
@@ -32,6 +36,7 @@ public class UserService {
         User user = optional.get();
         MypageDto mypageDto = new MypageDto();
         mypageDto.setNickname(user.getNickname());
+        mypageDto.setTown(user.getTown());
         mypageDto.setProfilePath(user.getProfilePath());
         mypageDto.setLatitude(user.getLatitude());
         mypageDto.setLongtitude(user.getLongtitude());
@@ -60,14 +65,15 @@ public class UserService {
     }
 
     @Transactional
-    public void updateLocation(String email, UserPetDto putDto) {
+    public void updateLocation(String email, UserPetDto userPetDto) {
         Optional<User> optional = userRepository.findByEmail(email);
         if (optional.isEmpty()) {
             throw new IllegalArgumentException();
         }
         User user = optional.get();
-        user.setLatitude(putDto.getLatitude());
-        user.setLongtitude(putDto.getLongtitude());
+        user.setTown(userPetDto.getTown());
+        user.setLatitude(userPetDto.getLatitude());
+        user.setLongtitude(userPetDto.getLongtitude());
     }
 
     @Transactional
@@ -85,6 +91,18 @@ public class UserService {
         userRepository.deleteByEmail(email);
     }
 
-//    @Transactional
-//    public void
+    @Transactional
+    public void reportUser(String email, ReportDto reportDto) {
+        Optional<User> optional = userRepository.findByEmail(email);
+        if (optional.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        User reporter = optional.get();
+        Optional<User> optional1 = userRepository.findById(reportDto.getReportee());
+        if (optional1.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        User reportee = optional1.get();
+        reportRepository.save(reportDto.toReportEntity(reporter, reportee));
+    }
 }

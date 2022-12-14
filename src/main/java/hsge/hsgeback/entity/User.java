@@ -34,6 +34,8 @@ public class User extends BaseEntity{
 
     private String role;
 
+    private String town;
+
     private int profilePath;
 
     @ColumnDefault(value = "0.03")
@@ -80,5 +82,9 @@ public class User extends BaseEntity{
 
     public void setRadius(Double radius) {
         this.radius = radius;
+    }
+
+    public void setTown(String town) {
+        this.town = town;
     }
 }

@@ -14,10 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -47,6 +44,7 @@ public class PetService {
             List<Pet> pets = user.getPets();
             for (Pet pet : pets) {
                 PetResponseDto petResponseDto = new PetResponseDto();
+                petResponseDto.setPetId(pet.getId());
                 petResponseDto.setName(pet.getPetName());
                 petResponseDto.setSex(pet.getGender());
                 petResponseDto.setBreed(pet.getBreed().getKorean());
@@ -101,6 +99,53 @@ public class PetService {
         dto.setPetName(pet.getPetName());
         dto.setId(pet.getId());
         return dto;
+    }
+
+    public Map<String, PetInfoResponseDto> rr(Long petId) {
+        Map<String, PetInfoResponseDto> result = new HashMap<>();
+        Optional<Pet> optional = petRepository.findById(petId);
+        if (optional.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        Pet pet = optional.get();
+        PetInfoResponseDto dto = new PetInfoResponseDto();
+        dto.setAge(pet.getAge().getKorean());
+        dto.setTag(pet.getLikeTag(), pet.getDislikeTag());
+        dto.setBreed(pet.getBreed().getKorean());
+        dto.setGender(pet.getGender());
+        dto.setDescription(pet.getDescription());
+        dto.setNeutralization(pet.getNeutralization());
+        dto.setPicture(pet.getPicture());
+        dto.setPetName(pet.getPetName());
+        dto.setId(pet.getId());
+        result.put("data", dto);
+        return result;
+    }
+
+    public Map<String, List<PetInfoResponseDto>> tt(String email) {
+        Map<String, List<PetInfoResponseDto>> jj = new HashMap<>();
+        Optional<User> optional = userRepository.findByEmail(email);
+        if (optional.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        User user = optional.get();
+        List<Pet> pets = user.getPets();
+        List<PetInfoResponseDto> result = new ArrayList<>();
+        for (Pet pet : pets) {
+            PetInfoResponseDto dto = new PetInfoResponseDto();
+            dto.setAge(pet.getAge().getKorean());
+            dto.setTag(pet.getLikeTag(), pet.getDislikeTag());
+            dto.setBreed(pet.getBreed().getKorean());
+            dto.setGender(pet.getGender());
+            dto.setDescription(pet.getDescription());
+            dto.setNeutralization(pet.getNeutralization());
+            dto.setPicture(pet.getPicture());
+            dto.setPetName(pet.getPetName());
+            dto.setId(pet.getId());
+            result.add(dto);
+        }
+        jj.put("본인강아지", result);
+        return jj;
     }
 
     public List<PetInfoResponseDto> getMyPet(String email) {
