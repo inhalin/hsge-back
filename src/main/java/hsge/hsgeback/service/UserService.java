@@ -40,6 +40,7 @@ public class UserService {
         mypageDto.setProfilePath(user.getProfilePath());
         mypageDto.setLatitude(user.getLatitude());
         mypageDto.setLongtitude(user.getLongtitude());
+        mypageDto.setRadius(user.getRadius());
         return mypageDto;
     }
 

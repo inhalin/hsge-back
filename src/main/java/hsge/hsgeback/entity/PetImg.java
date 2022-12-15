@@ -20,6 +20,7 @@ public class PetImg {
 
     private String s3Url;
     private String oriImgName;
+    private String uuid;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -28,16 +29,11 @@ public class PetImg {
     private Pet pet;
 
     @Builder
-    public PetImg(Long id, String s3Url, String oriImgName, Pet pet) {
+    public PetImg(Long id, String s3Url, String oriImgName, Pet pet, String uuid) {
         this.id = id;
         this.s3Url = s3Url;
         this.oriImgName = oriImgName;
         this.pet = pet;
-    }
-
-    public void updatePetImg(String oriImgName, String uuid, Long id){
-        this.oriImgName = oriImgName;
-        this.s3Url = uuid;
-        this.id = id;
+        this.uuid = uuid;
     }
 }

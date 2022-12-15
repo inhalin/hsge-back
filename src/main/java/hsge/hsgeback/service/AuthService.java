@@ -1,5 +1,6 @@
 package hsge.hsgeback.service;
 
+import com.amazonaws.services.s3.AmazonS3;
 import hsge.hsgeback.constant.Age;
 import hsge.hsgeback.constant.Breed;
 import hsge.hsgeback.dto.request.SignupDto;
@@ -7,8 +8,11 @@ import hsge.hsgeback.dto.response.AgeDto;
 import hsge.hsgeback.dto.response.BaseResponseDto;
 import hsge.hsgeback.dto.response.BreedDto;
 import hsge.hsgeback.dto.response.SignupTokenResponseDto;
+import hsge.hsgeback.entity.Pet;
+import hsge.hsgeback.entity.PetImg;
 import hsge.hsgeback.entity.User;
 import hsge.hsgeback.exception.NicknameDuplicateException;
+import hsge.hsgeback.repository.PetImgRepository;
 import hsge.hsgeback.repository.PetRepository;
 import hsge.hsgeback.repository.UserRepository;
 import hsge.hsgeback.util.JWTUtil;
@@ -27,24 +31,22 @@ import java.util.*;
 @Slf4j
 @Service
 public class AuthService {
-    @Value("${spring.servlet.multipart.location}")
-    private String pathName;
     private final UserRepository userRepository;
     private final PetRepository petRepository;
+    private final S3Upload s3Upload;
     private final JWTUtil jwtUtil;
 
     @Transactional
-    public SignupTokenResponseDto createInfo(MultipartFile imgFile, SignupDto signupDto) throws IOException {
+    public SignupTokenResponseDto createInfo(MultipartFile imgFile, SignupDto signupDto) throws Exception {
         if (checkNicknameDuplicate(signupDto.getNickname())) {
             throw new NicknameDuplicateException("존재하는 닉네임입니다.");
         }
         User user = userRepository.save(signupDto.toUserEntity());
-        petRepository.save(signupDto.toPetEntity(user));
-
-        UUID uuid = UUID.randomUUID();
-        String fileName = uuid + "_" + imgFile.getOriginalFilename();
-        File saveFile = new File(pathName, fileName);
-        imgFile.transferTo(saveFile);
+        Pet pet1 = petRepository.save(signupDto.toPetEntity(user));
+        PetImg petImg = s3Upload.upload(imgFile, pet1);
+        List<PetImg> petImgList = new ArrayList<>();
+        petImgList.add(petImg);
+        pet1.setPetImg(petImgList);
         String accessToken = jwtUtil.generateAccessToken(Map.of("email", signupDto.getEmail()));
         String refreshToken = jwtUtil.generateRefreshToken(Map.of("email", signupDto.getEmail()));
         return new SignupTokenResponseDto(accessToken, refreshToken);

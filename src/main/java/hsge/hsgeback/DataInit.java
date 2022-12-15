@@ -74,14 +74,15 @@ public class DataInit {
                     .build();
             petRepository.save(pet1);
             String s3Url = "https://hsge-bucket.s3.ap-northeast-2.amazonaws.com/2fc7389b-6286-4cb7-8bb6-9e6be17fedd0-87e7180607f6d331fce8c4b2d1b395bb.jpg";
-            String originalFileName = "2fc7389b-6286-4cb7-8bb6-9e6be17fedd0-87e7180607f6d331fce8c4b2d1b395bb.jpg";
-
+            String originalFileName = "87e7180607f6d331fce8c4b2d1b395bb.jpg";
+            String key = "2fc7389b-6286-4cb7-8bb6-9e6be17fedd0-";
             UUID uuid = UUID.randomUUID();
 
             PetImgDto petImgDto = new PetImgDto();
             petImgDto.setOriImgName(originalFileName);
             String savedFileName = uuid.toString() + ".jpg";  // uuid에 확장자만 더해서 저장되는 파일 이름은 uuid.png 이런식으로 저장 된다.
             petImgDto.setS3Url(s3Url);
+            petImgDto.setUuid(key+originalFileName);
             petImgRepository.save(petImgDto.toPetImgEntity(pet1));
 
             Pet pet2 = Pet.builder()

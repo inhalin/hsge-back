@@ -20,11 +20,14 @@ public class PetImgDto {
 
     private Pet pet;
 
+    private String uuid;
+
     public PetImg toPetImgEntity(Pet pet){
         return PetImg.builder()
                 .s3Url(getS3Url())
                 .oriImgName(getOriImgName())
                 .pet(pet)
+                .uuid(getUuid())
                 .build();
     }
 }

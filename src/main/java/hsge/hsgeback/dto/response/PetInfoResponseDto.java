@@ -6,6 +6,10 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @Getter
 @Setter
 public class PetInfoResponseDto {
@@ -21,7 +25,7 @@ public class PetInfoResponseDto {
 
     private Boolean neutralization;
 
-    private String picture;
+    private List<String> petImg = new ArrayList<>();
 
     private String breed;
 
@@ -33,9 +37,18 @@ public class PetInfoResponseDto {
 
         private String[] tagDisLike;
     }
-
     public void setTag(String tagLike, String tagDisLike) {
-        tag.setTagLike(tagLike.split("#"));
-        tag.setTagDisLike(tagDisLike.split("#"));
+        String[] strArray = getTags(tagLike);
+        tag.setTagLike(strArray);
+        strArray = getTags(tagDisLike);
+        tag.setTagDisLike(strArray);
+    }
+
+    private static String[] getTags(String tags) {
+        String[] strArray = tags.split("[#,]");
+        List<String> strList = new ArrayList<>(Arrays.asList(strArray));
+        strList.removeAll(List.of(""));
+        strArray  = strList.toArray(new String[0]);
+        return strArray;
     }
 }

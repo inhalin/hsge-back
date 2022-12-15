@@ -30,8 +30,8 @@ public class Pet extends BaseEntity {
 
     private Boolean neutralization;
 
-    private String picture;
-
+    @OneToMany(mappedBy = "pet",  cascade = CascadeType.ALL)
+    private List<PetImg> petImg = new ArrayList<>();
     @Enumerated(EnumType.STRING)
     private Breed breed;
 
@@ -46,22 +46,22 @@ public class Pet extends BaseEntity {
     private final List<Match> matchList = new ArrayList<>();
 
     @Builder
-    public Pet(Long id, String petName, Age age, String gender, String description, Boolean neutralization, String picture, Breed breed, String likeTag, String dislikeTag, User user) {
+    public Pet(Long id, String petName, Age age, String gender, String description, Boolean neutralization, List<PetImg> petImg, Breed breed, String likeTag, String dislikeTag, User user) {
         this.id = id;
         this.petName = petName;
         this.age = age;
         this.gender = gender;
         this.description = description;
         this.neutralization = neutralization;
-        this.picture = picture;
+        this.petImg = petImg;
         this.breed = breed;
         this.likeTag = likeTag;
         this.dislikeTag = dislikeTag;
         this.user = user;
     }
 
-    public void updatePetInfo(String petName, String gender, Breed breed,String picture, Boolean neutralization, String likeTag, String dislikeTag, String description, Age age) {
-        this.picture = picture;
+
+    public void updatePet(String petName, String gender, Breed breed, Boolean neutralization, String likeTag, String dislikeTag, String description, Age age){
         this.neutralization = neutralization;
         this.likeTag = likeTag;
         this.dislikeTag = dislikeTag;
@@ -70,6 +70,9 @@ public class Pet extends BaseEntity {
         this.breed = breed;
         this.gender = gender;
         this.petName = petName;
+    }
 
+    public void setPetImg(List<PetImg> petImg) {
+        this.petImg = petImg;
     }
 }
