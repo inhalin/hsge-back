@@ -41,15 +41,12 @@ public class User extends BaseEntity{
     @ColumnDefault(value = "0.03")
     private Double radius;
 
-    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pet> pets = new ArrayList<>();
 
-    @Builder.Default
     @OneToMany(mappedBy = "reporter")
     private List<Report> reporter;
 
-    @Builder.Default
     @OneToMany(mappedBy = "reportee")
     private List<Report> reportee;
 
