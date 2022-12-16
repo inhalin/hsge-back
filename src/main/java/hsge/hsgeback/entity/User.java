@@ -1,6 +1,9 @@
 package hsge.hsgeback.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -59,7 +62,7 @@ public class User extends BaseEntity{
     @OneToMany(mappedBy = "likedUser")
     private List<Chatroom> likedUser;
 
-    @OneToMany(mappedBy = "userId")
+    @OneToMany(mappedBy = "user")
     private List<Message> messageList = new ArrayList<>();
 
     private String fcmToken;
