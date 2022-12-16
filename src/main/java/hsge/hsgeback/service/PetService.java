@@ -1,10 +1,9 @@
 package hsge.hsgeback.service;
 
+import hsge.hsgeback.constant.Age;
 import hsge.hsgeback.dto.request.SignupDto;
 import hsge.hsgeback.dto.request.UserPetDto;
-import hsge.hsgeback.dto.response.PetInfoResponseDto;
-import hsge.hsgeback.dto.response.PetResponseDto;
-import hsge.hsgeback.dto.response.UrlDto;
+import hsge.hsgeback.dto.response.*;
 import hsge.hsgeback.entity.Pet;
 import hsge.hsgeback.entity.PetImg;
 import hsge.hsgeback.entity.User;
@@ -38,10 +37,6 @@ public class PetService {
 
     public List<PetResponseDto> findPetByLocation(String email) {
         Optional<User> optional = userRepository.findByEmail(email);
-//        if (optional.isEmpty()) {
-//            throw new IllegalArgumentException();
-//        }
-        // optional.get()은 최대한 안쓰는게 좋습니다!
         User findUser = optional.orElseThrow(IllegalArgumentException::new);
         Double currentLatitude = findUser.getLatitude();
         Double currentLongtitude = findUser.getLongtitude();
@@ -105,14 +100,17 @@ public class PetService {
 
     public PetInfoResponseDto getOnePet(Long petId) {
         Optional<Pet> optional = petRepository.findById(petId);
-        if (optional.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-        Pet pet = optional.get();
+        Pet pet = optional.orElseThrow();
         PetInfoResponseDto dto = new PetInfoResponseDto();
-        dto.setAge(pet.getAge().getKorean());
+        AgeDto ageDto = new AgeDto();
+        ageDto.setKey(pet.getAge().toString());
+        ageDto.setValue(pet.getAge().getKorean());
+        BreedDto breedDto = new BreedDto();
+        breedDto.setKey(pet.getBreed().toString());
+        breedDto.setValue(pet.getBreed().getKorean());
         dto.setTag(pet.getLikeTag(), pet.getDislikeTag());
-        dto.setBreed(pet.getBreed().getKorean());
+        dto.setBreedDto(breedDto);
+        dto.setAgeDto(ageDto);
         dto.setGender(pet.getGender());
         dto.setDescription(pet.getDescription());
         dto.setNeutralization(pet.getNeutralization());
@@ -137,7 +135,14 @@ public class PetService {
         List<PetInfoResponseDto> result = new ArrayList<>();
         for (Pet pet : pets) {
             PetInfoResponseDto dto = new PetInfoResponseDto();
-            dto.setAge(pet.getAge().getKorean());
+            BreedDto breedDto = new BreedDto();
+            breedDto.setKey(pet.getBreed().toString());
+            breedDto.setValue(pet.getBreed().getKorean());
+            dto.setBreedDto(breedDto);
+            AgeDto ageDto = new AgeDto();
+            ageDto.setKey(pet.getAge().toString());
+            ageDto.setValue(pet.getAge().getKorean());
+            dto.setAgeDto(ageDto);
             dto.setTag(pet.getLikeTag(), pet.getDislikeTag());
             dto.setBreed(pet.getBreed().getKorean());
             dto.setGender(pet.getGender());
@@ -184,19 +189,6 @@ public class PetService {
             s3Upload.update(multipartFile, petId);
         }
 
-        pet.updatePet(userPetDto.getPetName(), userPetDto.getGender(), userPetDto.getBreed(), userPetDto.getNeutralization(), userPetDto.getLikeTag(), userPetDto.getDislikeTag(), userPetDto.getDescription(), userPetDto.getAge());
-    }
-
-    @Transactional
-    public void updatePetWithoutImg(String email, Long petId, UserPetDto userPetDto){
-        Optional<Pet> optional = petRepository.findById(petId);
-        Pet pet = optional.orElseThrow();
-        Long id = pet.getUser().getId();
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        User user = optionalUser.orElseThrow();
-        if (!Objects.equals(id, user.getId())){
-            throw new NotOwnerException("NotOwnerException");
-        }
         pet.updatePet(userPetDto.getPetName(), userPetDto.getGender(), userPetDto.getBreed(), userPetDto.getNeutralization(), userPetDto.getLikeTag(), userPetDto.getDislikeTag(), userPetDto.getDescription(), userPetDto.getAge());
     }
 

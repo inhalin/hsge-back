@@ -50,7 +50,7 @@ public class User extends BaseEntity{
     @OneToMany(mappedBy = "reportee")
     private List<Report> reportee;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Match> matchList = new ArrayList<>();
 
     @OneToMany(mappedBy = "likeUser")

@@ -29,6 +29,10 @@ public class PetInfoResponseDto {
 
     private String breed;
 
+    private BreedDto breedDto;
+
+    private AgeDto ageDto;
+
     private PetResponseDto.Tag tag = new PetResponseDto.Tag();
 
     @Data

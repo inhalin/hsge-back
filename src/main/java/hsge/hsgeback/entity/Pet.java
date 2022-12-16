@@ -5,6 +5,7 @@ import hsge.hsgeback.constant.Breed;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class Pet extends BaseEntity {
     @ManyToOne
     private User user;
 
-    @OneToMany(mappedBy = "pet")
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
     private final List<Match> matchList = new ArrayList<>();
 
     @Builder
