@@ -13,6 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static hsge.hsgeback.constant.PushNotification.LIKE_BODY;
 import static hsge.hsgeback.constant.PushNotification.LIKE_TITLE;
 
@@ -48,15 +51,18 @@ public class MatchService {
 
     public void sendMatchNotification(UserPetMatchDto matchDto) throws FirebaseMessagingException {
         User user = userRepository.findByEmail(matchDto.getPetOwnerEmail());
-
         String fcmToken = userRepository.getFcmTokenByEmail(user.getEmail());
 
         String title = LIKE_TITLE.getContent(matchDto.getPetName());
         String body = LIKE_BODY.getContent(matchDto.getLikerNickname());
 
+        Map<String, String> message = new HashMap<>();
+        message.put("title", title);
+        message.put("body", body);
+
         log.debug("FCM Message: 강아지 좋아요 푸시 알림");
         log.debug("title = {}, body = {}", title, body);
 
-        fcmService.sendMessageTo(fcmToken, title, body);
+        fcmService.sendMessageTo(fcmToken, message);
     }
 }
