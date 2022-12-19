@@ -47,10 +47,7 @@ public class UserService {
     @Transactional
     public void updateUserProfile(String email, UserPetDto userPetDto) {
         Optional<User> optional = userRepository.findByEmail(email);
-        if (optional.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-        User user = optional.get();
+        User user = optional.orElseThrow();
         user.setNickname(userPetDto.getNickname());
         user.setProfilePath(userPetDto.getProfilePath());
     }
