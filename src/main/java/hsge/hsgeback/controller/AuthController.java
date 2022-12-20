@@ -58,8 +58,9 @@ public class AuthController {
     }
 
     @PostMapping("/api/auth/fcm/token")
-    public ResponseEntity<String> saveFcmToken(@RequestBody FcmTokenDto tokenDto) {
-        authService.saveFcmToken(tokenDto);
+    public ResponseEntity<String> saveFcmToken(HttpServletRequest request, @RequestBody FcmTokenDto tokenDto) {
+        String email = jwtUtil.getEmail(request);
+        authService.saveFcmToken(email, tokenDto.getToken());
         return ResponseEntity.ok("기기 토큰이 정상적으로 저장되었습니다.");
     }
 

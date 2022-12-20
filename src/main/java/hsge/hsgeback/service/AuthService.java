@@ -82,8 +82,8 @@ public class AuthService {
     }
 
     @Transactional
-    public void saveFcmToken(FcmTokenDto tokenDto) {
-        userCustomRepository.saveFcmToken(tokenDto.getEmail(), tokenDto.getToken());
+    public void saveFcmToken(String email, String fcmToken) {
+        userCustomRepository.saveFcmToken(email, fcmToken);
     }
 
     @Transactional
