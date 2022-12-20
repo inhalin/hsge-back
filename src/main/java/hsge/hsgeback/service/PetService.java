@@ -6,10 +6,12 @@ import hsge.hsgeback.dto.request.UserPetDto;
 import hsge.hsgeback.dto.response.*;
 import hsge.hsgeback.entity.Pet;
 import hsge.hsgeback.entity.PetImg;
+import hsge.hsgeback.entity.Report;
 import hsge.hsgeback.entity.User;
 import hsge.hsgeback.exception.NotOwnerException;
 import hsge.hsgeback.repository.PetImgRepository;
 import hsge.hsgeback.repository.PetRepository;
+import hsge.hsgeback.repository.ReportRepository;
 import hsge.hsgeback.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +35,8 @@ public class PetService {
     private final PetImgRepository petImgRepository;
     private final UserRepository userRepository;
 
+    private final ReportRepository reportRepository;
+
     private final S3Upload s3Upload;
 
     public List<PetResponseDto> findPetByLocation(String email) {
@@ -47,23 +51,32 @@ public class PetService {
         List<User> userList = userRepository.findByLatitudeBetweenAndLongtitudeBetween(startLatitude, endLatitude, startLongtitude, endLongtitude);
 //        List<Pet> petList = userList.stream().map(v -> v.getPets()).flatMap(List::stream).collect(Collectors.toList());
         List<PetResponseDto> result = new ArrayList<>();
+        List<Report> reportee1 = reportRepository.findReportee(findUser);
+//        List<Report> reportee = findUser.getReportee(); // 신고 당한 유저는 userList에서 걸러지게 해야되는데, 반복문을 또 쓰는 건 아닌 것 같은데,
+        log.info("===============================");
+        for (Report report : reportee1) {
+            log.info("re : {}", report.getReportee().getId());
+        }
+        log.info("===============================");
         for (User user : userList) {
             List<Pet> pets = user.getPets();
             for (Pet pet : pets) {
-                PetResponseDto petResponseDto = new PetResponseDto();
-                List<PetImg> petImg = pet.getPetImg();
-                List<String> urlList = petImg.stream()
-                        .map(h -> new UrlDto(h.getS3Url()).getImageUrl())
-                        .collect(Collectors.toList());
-                petResponseDto.setPetImg(urlList);
-                petResponseDto.setPetId(pet.getId());
-                petResponseDto.setName(pet.getPetName());
-                petResponseDto.setSex(pet.getGender());
-                petResponseDto.setBreed(pet.getBreed().getKorean());
-                petResponseDto.setIsNeuter(pet.getNeutralization());
-                petResponseDto.setTag(pet.getLikeTag(), pet.getDislikeTag());
-                petResponseDto.setAge(pet.getAge().getKorean());
-                result.add(petResponseDto);
+                if (!Objects.equals(pet.getUser().getId(), findUser.getId())) {  // 본인 강아지는 제외
+                    PetResponseDto petResponseDto = new PetResponseDto();
+                    List<PetImg> petImg = pet.getPetImg();
+                    List<String> urlList = petImg.stream()
+                            .map(h -> new UrlDto(h.getS3Url()).getImageUrl())
+                            .collect(Collectors.toList());
+                    petResponseDto.setPetImg(urlList);
+                    petResponseDto.setPetId(pet.getId());
+                    petResponseDto.setName(pet.getPetName());
+                    petResponseDto.setSex(pet.getGender());
+                    petResponseDto.setBreed(pet.getBreed().getKorean());
+                    petResponseDto.setIsNeuter(pet.getNeutralization());
+                    petResponseDto.setTag(pet.getLikeTag(), pet.getDislikeTag());
+                    petResponseDto.setAge(pet.getAge().getKorean());
+                    result.add(petResponseDto);
+                }
             }
         }
         return result;
@@ -127,10 +140,7 @@ public class PetService {
 
     public List<PetInfoResponseDto> getMyPet(String email) {
         Optional<User> optional = userRepository.findByEmail(email);
-        if (optional.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-        User user = optional.get();
+        User user = optional.orElseThrow();
         List<Pet> pets = user.getPets();
         List<PetInfoResponseDto> result = new ArrayList<>();
         for (Pet pet : pets) {
@@ -192,7 +202,16 @@ public class PetService {
         pet.updatePet(userPetDto.getPetName(), userPetDto.getGender(), userPetDto.getBreed(), userPetDto.getNeutralization(), userPetDto.getLikeTag(), userPetDto.getDislikeTag(), userPetDto.getDescription(), userPetDto.getAge());
     }
 
-    public void deletePet(Long petId) {
+    @Transactional
+    public void deletePet(String email,Long petId) {
+        Optional<Pet> optionalPet = petRepository.findById(petId);
+        Pet pet = optionalPet.orElseThrow();
+        Long id = pet.getUser().getId();
+        Optional<User> optional = userRepository.findByEmail(email);
+        User user = optional.orElseThrow();
+        if (!Objects.equals(id, user.getId())){
+            throw new NotOwnerException("NotOwnerException");
+        }
         petRepository.deleteById(petId);
     }
 }
