@@ -8,6 +8,7 @@ import hsge.hsgeback.dto.response.NicknameDuplicateResponseDto;
 import hsge.hsgeback.dto.response.SignupTokenResponseDto;
 import hsge.hsgeback.service.AuthService;
 import hsge.hsgeback.util.JWTUtil;
+import hsge.hsgeback.service.S3Upload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,8 +31,9 @@ public class AuthController {
     private final AuthService authService;
     private final JWTUtil jwtUtil;
 
+    private final S3Upload s3Upload;
     @PostMapping(value = "/api/auth/signup", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<SignupTokenResponseDto> signup(@RequestPart MultipartFile imgFile, @RequestPart SignupDto signupDto) throws IOException {
+    public ResponseEntity<SignupTokenResponseDto> signup(@RequestPart MultipartFile imgFile, @RequestPart SignupDto signupDto) throws Exception {
         SignupTokenResponseDto dto = authService.createInfo(imgFile, signupDto);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
@@ -56,7 +58,7 @@ public class AuthController {
     private BaseResponseDto<List<Object>> getAge() {
         return authService.getAge();
     }
-
+    
     @PostMapping("/api/auth/fcm/token")
     public ResponseEntity<String> saveFcmToken(HttpServletRequest request, @RequestBody FcmTokenDto tokenDto) {
         String email = jwtUtil.getEmail(request);
@@ -68,5 +70,10 @@ public class AuthController {
     public ResponseEntity<String> deleteFcmToken(HttpServletRequest request) {
         authService.deleteFcmToken(jwtUtil.getEmail(request));
         return ResponseEntity.ok("기기 토큰이 정상적으로 삭제되었습니다.");
+    }
+
+    @DeleteMapping("/api/delete") // s3 객체 삭제 //pet-image/2fc7389b-6286-4cb7-8bb6-9e6be17fedd0-87e7180607f6d331fce8c4b2d1b395bb.jpg
+    public void delete(@RequestParam String filePath){
+        s3Upload.delete(filePath);
     }
 }
