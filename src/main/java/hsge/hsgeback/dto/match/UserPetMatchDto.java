@@ -10,7 +10,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class UserPetMatchDto {
+    private String likerEmail;
     private String likerNickname;
+
+    private Long petId;
     private String petName;
+
     private String petOwnerEmail;
+    private String petOwnerNickname;
 }
