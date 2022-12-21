@@ -3,6 +3,7 @@ package hsge.hsgeback.service;
 import com.amazonaws.services.s3.AmazonS3;
 import hsge.hsgeback.constant.Age;
 import hsge.hsgeback.constant.Breed;
+import hsge.hsgeback.dto.firebase.FcmTokenDto;
 import hsge.hsgeback.dto.request.SignupDto;
 import hsge.hsgeback.dto.response.AgeDto;
 import hsge.hsgeback.dto.response.BaseResponseDto;
@@ -14,6 +15,7 @@ import hsge.hsgeback.entity.User;
 import hsge.hsgeback.exception.NicknameDuplicateException;
 import hsge.hsgeback.repository.PetImgRepository;
 import hsge.hsgeback.repository.PetRepository;
+import hsge.hsgeback.repository.UserCustomRepository;
 import hsge.hsgeback.repository.UserRepository;
 import hsge.hsgeback.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +37,7 @@ public class AuthService {
     private final PetRepository petRepository;
     private final S3Upload s3Upload;
     private final JWTUtil jwtUtil;
+    private final UserCustomRepository userCustomRepository;
 
     @Transactional
     public SignupTokenResponseDto createInfo(MultipartFile imgFile, SignupDto signupDto) throws Exception {
@@ -76,4 +79,13 @@ public class AuthService {
         return new BaseResponseDto<>("반려견 나이", objects);
     }
 
+    @Transactional
+    public void saveFcmToken(String email, String fcmToken) {
+        userCustomRepository.saveFcmToken(email, fcmToken);
+    }
+
+    @Transactional
+    public void deleteFcmToken(String email) {
+        userCustomRepository.deleteFcmToken(email);
+    }
 }

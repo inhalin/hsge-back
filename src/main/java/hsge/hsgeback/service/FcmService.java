@@ -4,10 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.Notification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -23,14 +24,11 @@ public class FcmService {
         this.firebaseMessaging = firebaseMessaging;
     }
 
-    public void sendMessageTo(String targetToken, String title, String body) throws FirebaseMessagingException {
+    public void sendMessageTo(String targetToken, Map<String, String> messageMap) throws FirebaseMessagingException {
 
         Message message = Message.builder()
                 .setToken(targetToken)
-                .setNotification(Notification.builder()
-                        .setTitle(title)
-                        .setBody(body)
-                        .build())
+                .putAllData(messageMap)
                 .build();
 
         String response = firebaseMessaging.send(message);

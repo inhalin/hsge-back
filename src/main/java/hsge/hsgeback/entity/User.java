@@ -1,6 +1,9 @@
 package hsge.hsgeback.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -38,6 +41,11 @@ public class User extends BaseEntity{
 
     private int profilePath;
 
+    private int reportCount;
+
+    @ColumnDefault("true")
+    private Boolean isValid = true;
+
     @ColumnDefault(value = "0.03")
     private Double radius;
 
@@ -48,7 +56,7 @@ public class User extends BaseEntity{
     private List<Report> reporter;
 
     @OneToMany(mappedBy = "reportee")
-    private List<Report> reportee;
+    private List<Report> reportee = new ArrayList<>();
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Match> matchList = new ArrayList<>();
@@ -59,7 +67,7 @@ public class User extends BaseEntity{
     @OneToMany(mappedBy = "likedUser")
     private List<Chatroom> likedUser;
 
-    @OneToMany(mappedBy = "userId")
+    @OneToMany(mappedBy = "user")
     private List<Message> messageList = new ArrayList<>();
 
     private String fcmToken;
@@ -87,6 +95,15 @@ public class User extends BaseEntity{
     public void setTown(String town) {
         this.town = town;
     }
+    
+    public void setReportCount(int reportCount) {
+        this.reportCount = reportCount;
+    }
+
+    public void setValid(Boolean valid) {
+        isValid = valid; 
+    }
+
 
     @Transient
     private Double startLatitude;
