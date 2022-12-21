@@ -101,6 +101,10 @@ public class UserService {
             throw new IllegalArgumentException();
         }
         User reportee = optional1.get();
+        reportee.setReportCount(reportee.getReportCount() + 1);
+        if (reportee.getReportCount() >= 3){
+            reportee.setValid(false);
+        }
         reportRepository.save(reportDto.toReportEntity(reporter, reportee));
     }
 }

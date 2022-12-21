@@ -31,6 +31,8 @@ public class SignupDto {
 
     private String town;
 
+    private String fcmToken;
+
     //pet
     private Long petId;
 
@@ -55,7 +57,7 @@ public class SignupDto {
     private String dislikeTag; // 싫어요 태그
 
     @Builder
-    public SignupDto(Long userId, String email, String nickname, Double latitude, Double longtitude, int profilePath, String town, Long petId, String petName, String gender, String description, Boolean neutralization, String picture, Age age, Breed breed, String likeTag, String dislikeTag) {
+    public SignupDto(Long userId, String email, String nickname, Double latitude, Double longtitude, int profilePath, String town, Long petId, String petName, String gender, String description, Boolean neutralization, String picture, Age age, Breed breed, String likeTag, String dislikeTag, String fcmToken) {
         this.userId = userId;
         this.email = email;
         this.nickname = nickname;
@@ -73,11 +75,11 @@ public class SignupDto {
         this.breed = breed;
         this.likeTag = likeTag;
         this.dislikeTag = dislikeTag;
+        this.fcmToken = fcmToken;
     }
 
 
     public User toUserEntity() {
-        log.info("nickname : {}", getNickname());
         return User.builder()
                 .nickname(getNickname())
                 .latitude(getLatitude())
@@ -85,6 +87,7 @@ public class SignupDto {
                 .profilePath(getProfilePath())
                 .email(getEmail())
                 .town(getTown())
+                .fcmToken(getFcmToken())
                 .build();
     }
 
