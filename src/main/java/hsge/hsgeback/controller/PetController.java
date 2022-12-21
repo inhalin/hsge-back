@@ -72,19 +72,14 @@ public class PetController {
     // 본인 강아지 제외해서 수정 시도시 예외처리
     @PutMapping(value = "/pets/{petId}",consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.MULTIPART_FORM_DATA_VALUE})
     public void putPet(HttpServletRequest request, @PathVariable Long petId, @RequestPart("content") UserPetDto userPetDto, @RequestPart(required = false) MultipartFile imgFile) throws IOException {
-//        if (imgFile == null){
-//            log.info("imgFile : {}", imgFile);
-//            String email = jwtUtil.getEmail(request);
-//            petService.updatePetWithoutImg(email,petId,userPetDto);
-//        }
-            log.info(" 있음 : {}");
             String email = jwtUtil.getEmail(request);
             petService.updatePet(email, petId, userPetDto, imgFile);
     }
 
     // DELETE 반려견 삭제 /api/pets/{petId}
     @DeleteMapping("/pets/{petId}")
-    public void deletePet(@PathVariable Long petId) {
-        petService.deletePet(petId);
+    public void deletePet(HttpServletRequest request, @PathVariable Long petId) {
+        String email = jwtUtil.getEmail(request);
+        petService.deletePet(email, petId);
     }
 }
