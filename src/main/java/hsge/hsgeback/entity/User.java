@@ -41,6 +41,11 @@ public class User extends BaseEntity{
 
     private int profilePath;
 
+    private int reportCount;
+
+    @ColumnDefault("true")
+    private Boolean isValid = true;
+
     @ColumnDefault(value = "0.03")
     private Double radius;
 
@@ -51,7 +56,7 @@ public class User extends BaseEntity{
     private List<Report> reporter;
 
     @OneToMany(mappedBy = "reportee")
-    private List<Report> reportee;
+    private List<Report> reportee = new ArrayList<>();
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Match> matchList = new ArrayList<>();
@@ -89,5 +94,13 @@ public class User extends BaseEntity{
 
     public void setTown(String town) {
         this.town = town;
+    }
+
+    public void setReportCount(int reportCount) {
+        this.reportCount = reportCount;
+    }
+
+    public void setValid(Boolean valid) {
+        isValid = valid;
     }
 }
