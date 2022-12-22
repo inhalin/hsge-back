@@ -17,4 +17,6 @@ public class MypageDto {
 
     private String town;
 
+    private Double radius;
+
 }

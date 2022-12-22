@@ -1,8 +1,11 @@
 package hsge.hsgeback.dto.response;
 
+import hsge.hsgeback.entity.PetImg;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,7 +18,7 @@ public class PetResponseDto {
 
     private String name;
 
-    private String picture;
+    private List<String> petImg = new ArrayList<>();
 
     private String breed;
 
@@ -48,4 +51,9 @@ public class PetResponseDto {
         strArray  = strList.toArray(new String[0]);
         return strArray;
     }
+
+    private String getImgaeUrl(String uuid, String imgName, String path){
+        return URLEncoder.encode(path + "/" + uuid + "_" + imgName, StandardCharsets.UTF_8);
+    }
+
 }

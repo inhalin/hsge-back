@@ -40,16 +40,14 @@ public class UserService {
         mypageDto.setProfilePath(user.getProfilePath());
         mypageDto.setLatitude(user.getLatitude());
         mypageDto.setLongtitude(user.getLongtitude());
+        mypageDto.setRadius(user.getRadius());
         return mypageDto;
     }
 
     @Transactional
     public void updateUserProfile(String email, UserPetDto userPetDto) {
         Optional<User> optional = userRepository.findByEmail(email);
-        if (optional.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-        User user = optional.get();
+        User user = optional.orElseThrow();
         user.setNickname(userPetDto.getNickname());
         user.setProfilePath(userPetDto.getProfilePath());
     }

@@ -7,12 +7,13 @@ import hsge.hsgeback.entity.User;
 import hsge.hsgeback.service.UserService;
 import hsge.hsgeback.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
@@ -30,7 +31,7 @@ public class UserController {
     }
 
     @PutMapping
-    public void updateMyProfile(HttpServletRequest request, UserPetDto userPetDto) {
+    public void updateMyProfile(HttpServletRequest request, @RequestBody UserPetDto userPetDto) {
         String email = jwtUtil.getEmail(request);
         userService.updateUserProfile(email, userPetDto);
     }

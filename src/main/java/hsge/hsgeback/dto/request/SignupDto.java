@@ -99,7 +99,6 @@ public class SignupDto {
                 .dislikeTag(getDislikeTag())
                 .age(getAge())
                 .user(user)
-                .picture(getPicture())
                 .build();
     }
 }
