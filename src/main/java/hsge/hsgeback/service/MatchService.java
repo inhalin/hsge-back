@@ -43,9 +43,12 @@ public class MatchService {
         matchRepository.save(match);
 
         return UserPetMatchDto.builder()
+                .likerEmail(user.getEmail())
                 .likerNickname(user.getNickname())
+                .petId(pet.getId())
                 .petName(pet.getPetName())
                 .petOwnerEmail(pet.getUser().getEmail())
+                .petOwnerNickname(pet.getUser().getNickname())
                 .build();
     }
 

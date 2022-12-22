@@ -21,13 +21,9 @@ public class Match extends BaseEntity{
     @Column(columnDefinition = "TINYINT")
     private Boolean likeValue;
 
-//    private Boolean accept;
-
     @ManyToOne
     private User user; // 좋아요 누른 사람
 
     @ManyToOne
     private Pet pet; // 좋아요 받은 강아지
-
-
 }
