@@ -12,6 +12,7 @@ import java.util.List;
 
 import static hsge.hsgeback.entity.QChatroom.chatroom;
 import static hsge.hsgeback.entity.QMessage.message;
+import static hsge.hsgeback.entity.QUser.user;
 
 @Repository
 @RequiredArgsConstructor
@@ -23,6 +24,7 @@ public class ChatroomCustomRepository {
         List<ChatSimpleDto> dtoList = new ArrayList<>();
         List<Chatroom> chatrooms = queryFactory
                 .selectFrom(chatroom)
+                .join(chatroom.likeUser, user).fetchJoin()
                 .where(chatroom.likeUser.id.eq(userId), chatroom.active.eq(true))
                 .fetch();
 
@@ -38,7 +40,11 @@ public class ChatroomCustomRepository {
 
     public List<ChatSimpleDto> findAllByOther(Long userId) {
         List<ChatSimpleDto> dtoList = new ArrayList<>();
-        List<Chatroom> chatrooms = queryFactory.selectFrom(chatroom).where(chatroom.likedUser.id.eq(userId)).fetch();
+        List<Chatroom> chatrooms = queryFactory
+                .selectFrom(chatroom)
+                .join(chatroom.likedUser, user).fetchJoin()
+                .where(chatroom.likedUser.id.eq(userId))
+                .fetch();
 
         for (Chatroom chat : chatrooms) {
             Message latestMessageInfo = getLatestMessageInfo(chat);
@@ -61,9 +67,9 @@ public class ChatroomCustomRepository {
     }
 
     private Message getLatestMessageInfo(Chatroom chat) {
-        return (Message) queryFactory
-                .select(message.content, message.checked)
-                .from(message)
+        return queryFactory
+                .selectFrom(message)
+                .join(message.chatroom, chatroom)
                 .where(message.chatroom.id.eq(chat.getId()))
                 .orderBy(message.createdAt.desc())
                 .fetchFirst();
