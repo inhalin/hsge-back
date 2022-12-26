@@ -63,9 +63,7 @@ public class AuthService {
         List<Object> objects = new ArrayList<>();
         List<Breed> breedList = Arrays.asList(Breed.values());
         for (Breed breed : breedList) {
-            BreedDto breedDto = new BreedDto();
-            breedDto.setKey(breed.toString());
-            breedDto.setValue(breed.getKorean());
+            BreedDto breedDto = new BreedDto(breed.toString(),breed.getKorean());
             objects.add(breedDto);
         }
         return new BaseResponseDto<>("견종", objects);
@@ -75,9 +73,7 @@ public class AuthService {
         List<Object> objects = new ArrayList<>();
         List<Age> ageList = Arrays.asList(Age.values());
         for (Age age : ageList) {
-            AgeDto ageDto = new AgeDto();
-            ageDto.setKey(age.toString());
-            ageDto.setValue(age.getKorean());
+            AgeDto ageDto = new AgeDto(age.toString(),age.getKorean());
             objects.add(ageDto);
         }
         return new BaseResponseDto<>("반려견 나이", objects);

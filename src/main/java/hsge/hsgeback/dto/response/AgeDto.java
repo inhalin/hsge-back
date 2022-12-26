@@ -8,4 +8,8 @@ public class AgeDto {
 
     private String value;
 
+    public AgeDto(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
 }
