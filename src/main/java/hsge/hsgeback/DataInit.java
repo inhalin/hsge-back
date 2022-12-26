@@ -51,11 +51,11 @@ public class DataInit {
         for (int i = 0; i < 5; i++) {
             User user1 = User.builder()
                     .nickname(name[i])
-                    .longtitude(126.980193)
+                    .longitude(126.980193)
                     .latitude(37.5685019)
                     .role("user")
                     .email(email[i])
-                    .profilePath(1)
+                    .profilePath(2131165383)
                     .password("1234")
                     .town("무교동")
                     .build();
