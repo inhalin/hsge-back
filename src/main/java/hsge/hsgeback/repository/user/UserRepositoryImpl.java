@@ -1,7 +1,6 @@
-package hsge.hsgeback.repository;
+package hsge.hsgeback.repository.user;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import hsge.hsgeback.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -9,16 +8,11 @@ import static hsge.hsgeback.entity.QUser.user;
 
 @Repository
 @RequiredArgsConstructor
-public class UserCustomRepository {
+public class UserRepositoryImpl implements UserRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
 
-    public User findByEmail(String email) {
-        return queryFactory.selectFrom(user)
-                .where(user.email.eq(email))
-                .fetchOne();
-    }
-
+    @Override
     public String getFcmTokenByEmail(String email) {
         return queryFactory.select(user.fcmToken)
                 .from(user)
@@ -26,6 +20,7 @@ public class UserCustomRepository {
                 .fetchFirst();
     }
 
+    @Override
     public void saveFcmToken(String email, String fcmToken) {
         queryFactory.update(user)
                 .set(user.fcmToken, fcmToken)
@@ -33,6 +28,7 @@ public class UserCustomRepository {
                 .execute();
     }
 
+    @Override
     public void deleteFcmToken(String email) {
         queryFactory.update(user)
                 .setNull(user.fcmToken)

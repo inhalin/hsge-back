@@ -1,6 +1,5 @@
 package hsge.hsgeback.service;
 
-import hsge.hsgeback.constant.Age;
 import hsge.hsgeback.dto.request.SignupDto;
 import hsge.hsgeback.dto.request.UserPetDto;
 import hsge.hsgeback.dto.response.*;
@@ -12,7 +11,7 @@ import hsge.hsgeback.exception.NotOwnerException;
 import hsge.hsgeback.repository.PetImgRepository;
 import hsge.hsgeback.repository.PetRepository;
 import hsge.hsgeback.repository.ReportRepository;
-import hsge.hsgeback.repository.UserRepository;
+import hsge.hsgeback.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
