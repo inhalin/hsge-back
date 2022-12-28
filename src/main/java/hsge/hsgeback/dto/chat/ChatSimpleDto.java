@@ -8,6 +8,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class ChatSimpleDto {
+
+    private Long roomId;
     private String nickname;
     private int profilePath;
     private String latestMessage;

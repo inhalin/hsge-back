@@ -2,7 +2,7 @@ package hsge.hsgeback.security.filter;
 
 import com.google.gson.Gson;
 import hsge.hsgeback.entity.User;
-import hsge.hsgeback.repository.UserRepository;
+import hsge.hsgeback.repository.user.UserRepository;
 import hsge.hsgeback.util.JWTUtil;
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -30,6 +30,12 @@ public class ReportCheckFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+        if (request.getRequestURI().startsWith("/ws")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String email = jwtUtil.getEmail(request);
         User user = userRepository.findByEmail(email).orElseThrow();
         if (user.getReportCount() > reportLimit) {
