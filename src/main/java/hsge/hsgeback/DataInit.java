@@ -8,7 +8,7 @@ import hsge.hsgeback.entity.PetImg;
 import hsge.hsgeback.entity.User;
 import hsge.hsgeback.repository.PetImgRepository;
 import hsge.hsgeback.repository.PetRepository;
-import hsge.hsgeback.repository.UserRepository;
+import hsge.hsgeback.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;

@@ -1,4 +1,4 @@
-package hsge.hsgeback.repository;
+package hsge.hsgeback.repository.chat;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import hsge.hsgeback.dto.chat.ChatSimpleDto;
@@ -16,10 +16,11 @@ import static hsge.hsgeback.entity.QUser.user;
 
 @Repository
 @RequiredArgsConstructor
-public class ChatroomCustomRepository {
+public class ChatroomRepositoryImpl implements ChatroomRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
+    @Override
     public List<ChatSimpleDto> findAllByMe(Long userId) {
         List<ChatSimpleDto> dtoList = new ArrayList<>();
         List<Chatroom> chatrooms = queryFactory
@@ -38,6 +39,7 @@ public class ChatroomCustomRepository {
         return dtoList;
     }
 
+    @Override
     public List<ChatSimpleDto> findAllByOther(Long userId) {
         List<ChatSimpleDto> dtoList = new ArrayList<>();
         List<Chatroom> chatrooms = queryFactory
@@ -56,13 +58,21 @@ public class ChatroomCustomRepository {
         return dtoList;
     }
 
+    @Override
+    public Chatroom findByUserEmails(String user1Email, String user2Eamil) {
+        return queryFactory.selectFrom(chatroom)
+                .where(chatroom.likeUser.email.eq(user1Email),
+                        chatroom.likedUser.email.eq(user2Eamil))
+                .fetchFirst();
+    }
+
     private ChatSimpleDto mapToChatSimpleDto(Chatroom chat, Message message) {
         return ChatSimpleDto.builder()
                 .nickname(chat.getLikeUser().getNickname())
                 .profilePath(chat.getLikeUser().getProfilePath())
                 .active(chat.getActive())
                 .latestMessage(message.getContent())
-                .checked(message.getChecked())
+                .checked(message.isChecked())
                 .build();
     }
 

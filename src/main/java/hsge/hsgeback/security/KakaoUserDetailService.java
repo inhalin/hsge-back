@@ -2,7 +2,7 @@ package hsge.hsgeback.security;
 
 import hsge.hsgeback.dto.kakao.KakaoUser;
 import hsge.hsgeback.entity.User;
-import hsge.hsgeback.repository.UserRepository;
+import hsge.hsgeback.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

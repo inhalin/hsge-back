@@ -1,9 +1,6 @@
 package hsge.hsgeback.exception.advice;
 
-import hsge.hsgeback.exception.BadWebClientRequestException;
-import hsge.hsgeback.exception.NicknameDuplicateException;
-import hsge.hsgeback.exception.NotOwnerException;
-import hsge.hsgeback.exception.ResourceNotFoundException;
+import hsge.hsgeback.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -46,6 +43,12 @@ public class ExceptionControllerAdvice {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ResourceNotFoundException.class)
     public ErrorResult handleResourceNotFoundException(ResourceNotFoundException e, WebRequest request) {
-        return new ErrorResult(e.getMessage(), LocalDateTime.now(), request.getDescription(false));
+        return new ErrorResult(e.getMessage(), request.getDescription(false));
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ResourceDuplicateException.class)
+    public ErrorResult handleResourceDuplicateException(ResourceDuplicateException e, WebRequest request) {
+        return new ErrorResult(e.getMessage(), request.getDescription(false));
     }
 }

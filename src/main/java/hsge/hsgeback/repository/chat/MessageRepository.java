@@ -1,4 +1,4 @@
-package hsge.hsgeback.repository;
+package hsge.hsgeback.repository.chat;
 
 import hsge.hsgeback.entity.Message;
 import org.springframework.data.jpa.repository.JpaRepository;

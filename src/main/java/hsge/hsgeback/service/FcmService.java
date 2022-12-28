@@ -24,6 +24,14 @@ public class FcmService {
         this.firebaseMessaging = firebaseMessaging;
     }
 
+    public Map<String, String> buildMessage(String title, String body, String image, String pushId) {
+        return Map.of(
+                "title", title,
+                "body", body,
+                "image", image,
+                "pushID", pushId);
+    }
+
     public void sendMessageTo(String targetToken, Map<String, String> messageMap) throws FirebaseMessagingException {
 
         Message message = Message.builder()

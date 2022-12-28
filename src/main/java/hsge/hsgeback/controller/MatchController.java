@@ -1,9 +1,8 @@
 package hsge.hsgeback.controller;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
-import hsge.hsgeback.dto.match.UserPetMatchDto;
+import hsge.hsgeback.dto.common.BasicResponse;
 import hsge.hsgeback.dto.request.UserPetInterestDto;
-import hsge.hsgeback.service.ChatService;
 import hsge.hsgeback.service.MatchService;
 import hsge.hsgeback.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
@@ -18,18 +17,10 @@ import javax.servlet.http.HttpServletRequest;
 public class MatchController {
 
     private final MatchService matchService;
-    private final ChatService chatService;
     private final JWTUtil jwtUtil;
 
     @PostMapping("/pets/{petId}/interest")
-    public ResponseEntity<Void> match(HttpServletRequest request, @PathVariable Long petId, @RequestBody UserPetInterestDto interestDto) throws FirebaseMessagingException {
-        UserPetMatchDto matchDto = matchService.saveMatch(jwtUtil.getEmail(request), petId, interestDto.getLike());
-
-        if (interestDto.getLike()) {
-            matchService.sendMatchNotification(matchDto);
-            chatService.saveChatroom(matchDto);
-        }
-
-        return ResponseEntity.ok().build();
+    public ResponseEntity<BasicResponse> match(HttpServletRequest request, @PathVariable Long petId, @RequestBody UserPetInterestDto interestDto) throws FirebaseMessagingException {
+        return ResponseEntity.ok(matchService.saveMatch(jwtUtil.getEmail(request), petId, interestDto.getLike()));
     }
 }

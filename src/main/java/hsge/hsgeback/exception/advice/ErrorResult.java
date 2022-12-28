@@ -9,16 +9,22 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ErrorResult {
     private Object message;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;
 
     private String details;
 
     public ErrorResult(Object message) {
+        this.timestamp = LocalDateTime.now();
         this.message = message;
+    }
+
+    public ErrorResult(Object message, String details) {
+        this.timestamp = LocalDateTime.now();
+        this.message = message;
+        this.details = details;
     }
 }

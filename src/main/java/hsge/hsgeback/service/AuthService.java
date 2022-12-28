@@ -1,9 +1,7 @@
 package hsge.hsgeback.service;
 
-import com.amazonaws.services.s3.AmazonS3;
 import hsge.hsgeback.constant.Age;
 import hsge.hsgeback.constant.Breed;
-import hsge.hsgeback.dto.firebase.FcmTokenDto;
 import hsge.hsgeback.dto.request.SignupDto;
 import hsge.hsgeback.dto.response.AgeDto;
 import hsge.hsgeback.dto.response.BaseResponseDto;
@@ -13,20 +11,15 @@ import hsge.hsgeback.entity.Pet;
 import hsge.hsgeback.entity.PetImg;
 import hsge.hsgeback.entity.User;
 import hsge.hsgeback.exception.NicknameDuplicateException;
-import hsge.hsgeback.repository.PetImgRepository;
 import hsge.hsgeback.repository.PetRepository;
-import hsge.hsgeback.repository.UserCustomRepository;
-import hsge.hsgeback.repository.UserRepository;
+import hsge.hsgeback.repository.user.UserRepository;
 import hsge.hsgeback.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -37,7 +30,6 @@ public class AuthService {
     private final PetRepository petRepository;
     private final S3Upload s3Upload;
     private final JWTUtil jwtUtil;
-    private final UserCustomRepository userCustomRepository;
 
     @Transactional
     public SignupTokenResponseDto createInfo(MultipartFile imgFile, SignupDto signupDto) throws Exception {
@@ -81,11 +73,11 @@ public class AuthService {
 
     @Transactional
     public void saveFcmToken(String email, String fcmToken) {
-        userCustomRepository.saveFcmToken(email, fcmToken);
+        userRepository.saveFcmToken(email, fcmToken);
     }
 
     @Transactional
     public void deleteFcmToken(String email) {
-        userCustomRepository.deleteFcmToken(email);
+        userRepository.deleteFcmToken(email);
     }
 }
