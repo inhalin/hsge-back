@@ -2,7 +2,8 @@ spring:
   config:
     activate:
       on-profile: prod
-
+  redis:
+    host: ${redis.prod.host}
   jpa:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:

@@ -1,21 +1,29 @@
 package hsge.hsgeback.service;
 
+import hsge.hsgeback.dto.redis.LocationDto;
+import hsge.hsgeback.dto.redis.WalkDto;
 import hsge.hsgeback.dto.request.MypageDto;
 import hsge.hsgeback.dto.request.ReportDto;
 import hsge.hsgeback.dto.request.UserPetDto;
+import hsge.hsgeback.entity.Chatroom;
 import hsge.hsgeback.entity.User;
 import hsge.hsgeback.repository.ReportRepository;
 import hsge.hsgeback.repository.user.UserRepository;
 import hsge.hsgeback.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Optional;
-
+import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -26,6 +34,7 @@ public class UserService {
 
     private final ReportRepository reportRepository;
     private final JWTUtil jwtUtil;
+    private final RedisTemplate<String, LocationDto> redisTemplate;
 
 
     public MypageDto getUserProfile(String email) {
@@ -102,9 +111,53 @@ public class UserService {
         }
         User reportee = optional1.get();
         reportee.setReportCount(reportee.getReportCount() + 1);
-        if (reportee.getReportCount() >= 3){
+        if (reportee.getReportCount() >= 3) {
             reportee.setValid(false);
         }
         reportRepository.save(reportDto.toReportEntity(reporter, reportee));
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> walkLocation(String email, LocationDto locationDto) {
+        Optional<User> optional = userRepository.findByEmail(email);
+        User user = optional.orElseThrow();
+        ValueOperations<String, LocationDto> vop = redisTemplate.opsForValue();
+        vop.set(user.getNickname(), locationDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    public LocationDto testRedis(String email) {
+        Optional<User> optional = userRepository.findByEmail(email);
+        User user = optional.orElseThrow();
+        ValueOperations<String, LocationDto> vop = redisTemplate.opsForValue();
+        return vop.get(user.getNickname());
+    }
+
+
+    public List<WalkDto> getWalkAround(String email) {
+        Optional<User> optional = userRepository.findByEmail(email);
+        User user = optional.orElseThrow();
+        List<Chatroom> chatroomList = user.getLikeUser();
+        List<User> likeUser = chatroomList.stream()
+                .filter(Chatroom::getActive)
+                .map(Chatroom::getLikedUser)
+                .collect(Collectors.toList());
+        ValueOperations<String, LocationDto> vop = redisTemplate.opsForValue();
+        LocationDto result = vop.get(user.getNickname());
+        Double currentLatitude = result.getLatitude();
+        Double currentLongitude = result.getLongitude();
+        // 3KM 고정
+        return likeUser.stream()
+                .filter(a -> {
+                    if ((currentLatitude - 0.03 < a.getLatitude()) && (currentLatitude + 0.03 > a.getLatitude()) && (currentLongitude - 0.03 < a.getLongitude()) && (currentLongitude + 0.03 > a.getLongitude()))
+                        return true;
+                    return false;
+                }).collect(Collectors.toList()).stream().map(w -> WalkDto.builder()
+                        .userId(w.getId())
+                        .longitude(w.getLongitude())
+                        .latitude(w.getLatitude())
+                        .nickname(w.getNickname())
+                        .build()).collect(Collectors.toList());
+
     }
 }
