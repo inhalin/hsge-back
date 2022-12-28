@@ -36,7 +36,7 @@ public class SecurityConfig {
     private final KakaoUserDetailService kakaoUserDetailService;
     private final UserRepository userRepository;
     private final JWTUtil jwtUtil;
-    @Value("${report-count}")
+//    @Value("${report-count}")
     private int reportCount;
 
     @Bean
