@@ -2,9 +2,7 @@ package hsge.hsgeback.dto.response;
 
 import hsge.hsgeback.constant.Age;
 import hsge.hsgeback.constant.Breed;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class PetInfoResponseDto {
     private Long id;
 
@@ -33,19 +32,36 @@ public class PetInfoResponseDto {
 
     private AgeDto ageDto;
 
-    private PetResponseDto.Tag tag = new PetResponseDto.Tag();
+    private Tag tag = new Tag();
 
-    @Data
-    static class Tag {
+    @NoArgsConstructor
+    @Getter
+    @Setter
+    public static class Tag {
         private String[] tagLike;
 
         private String[] tagDisLike;
+
+        public Tag(String tagLike, String tagDisLike) {
+            this.tagLike = getTags(tagLike);
+            this.tagDisLike = getTags(tagDisLike);
+        }
     }
-    public void setTag(String tagLike, String tagDisLike) {
-        String[] strArray = getTags(tagLike);
-        tag.setTagLike(strArray);
-        strArray = getTags(tagDisLike);
-        tag.setTagDisLike(strArray);
+
+    @Builder
+    public PetInfoResponseDto(Long id, String petName, String age, String gender, String description, Boolean neutralization, List<String> petImg, String breed, BreedDto breedDto, AgeDto ageDto, Tag tag) {
+        this.id = id;
+        this.petName = petName;
+        this.age = age;
+        this.gender = gender;
+
+        this.description = description;
+        this.neutralization = neutralization;
+        this.petImg = petImg;
+        this.breed = breed;
+        this.breedDto = breedDto;
+        this.ageDto = ageDto;
+        this.tag = tag;
     }
 
     private static String[] getTags(String tags) {

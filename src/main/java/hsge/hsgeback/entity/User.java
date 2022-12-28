@@ -33,7 +33,7 @@ public class User extends BaseEntity{
 
     private Double latitude;
 
-    private Double longtitude;
+    private Double longitude;
 
     private String role;
 
@@ -80,8 +80,8 @@ public class User extends BaseEntity{
         this.latitude = latitude;
     }
 
-    public void setLongtitude(Double longtitude) {
-        this.longtitude = longtitude;
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 
     public void setProfilePath(int profilePath) {
@@ -95,12 +95,32 @@ public class User extends BaseEntity{
     public void setTown(String town) {
         this.town = town;
     }
-
+    
     public void setReportCount(int reportCount) {
         this.reportCount = reportCount;
     }
 
     public void setValid(Boolean valid) {
-        isValid = valid;
+        isValid = valid; 
+    }
+
+
+    @Transient
+    private Double startLatitude;
+
+    @Transient
+    private Double endLatitude;
+
+    @Transient
+    private Double startLongitude;
+
+    @Transient
+    private Double endLongitude;
+
+    public void calculateLocation() {
+        this.startLatitude = this.latitude - this.radius;
+        this.endLatitude = this.latitude + this.radius;
+        this.startLongitude = this.longitude - this.radius;
+        this.endLongitude = this.longitude + this.radius;
     }
 }

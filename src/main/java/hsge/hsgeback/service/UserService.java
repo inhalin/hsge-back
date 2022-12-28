@@ -39,7 +39,7 @@ public class UserService {
         mypageDto.setTown(user.getTown());
         mypageDto.setProfilePath(user.getProfilePath());
         mypageDto.setLatitude(user.getLatitude());
-        mypageDto.setLongtitude(user.getLongtitude());
+        mypageDto.setLongtitude(user.getLongitude());
         mypageDto.setRadius(user.getRadius());
         return mypageDto;
     }
@@ -71,7 +71,7 @@ public class UserService {
         User user = optional.get();
         user.setTown(userPetDto.getTown());
         user.setLatitude(userPetDto.getLatitude());
-        user.setLongtitude(userPetDto.getLongtitude());
+        user.setLongitude(userPetDto.getLongtitude());
     }
 
     @Transactional

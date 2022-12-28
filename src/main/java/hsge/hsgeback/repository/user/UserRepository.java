@@ -16,5 +16,5 @@ public interface UserRepository extends JpaRepository<User, Long>, UserRepositor
 
     Optional<User> deleteByEmail(String email);
 
-    List<User> findByLatitudeBetweenAndLongtitudeBetween(Double startLatitude, Double endLatitude, Double startLongtitude, Double endLongtitude);
+    List<User> findByLatitudeBetweenAndLongitudeBetween(Double startLatitude, Double endLatitude, Double startLongitude, Double endLongitude);
 }

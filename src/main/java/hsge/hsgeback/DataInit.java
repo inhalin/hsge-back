@@ -8,7 +8,7 @@ import hsge.hsgeback.entity.PetImg;
 import hsge.hsgeback.entity.User;
 import hsge.hsgeback.repository.PetImgRepository;
 import hsge.hsgeback.repository.PetRepository;
-import hsge.hsgeback.repository.UserRepository;
+import hsge.hsgeback.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -51,11 +51,11 @@ public class DataInit {
         for (int i = 0; i < 5; i++) {
             User user1 = User.builder()
                     .nickname(name[i])
-                    .longtitude(126.980193)
+                    .longitude(126.980193)
                     .latitude(37.5685019)
                     .role("user")
                     .email(email[i])
-                    .profilePath(1)
+                    .profilePath(2131165383)
                     .password("1234")
                     .town("무교동")
                     .build();

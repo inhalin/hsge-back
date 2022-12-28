@@ -1,10 +1,8 @@
 package hsge.hsgeback.config;
 
+import hsge.hsgeback.repository.UserRepository;
 import hsge.hsgeback.security.KakaoUserDetailService;
-import hsge.hsgeback.security.filter.ExceptionHandlerFilter;
-import hsge.hsgeback.security.filter.LoginFilter;
-import hsge.hsgeback.security.filter.RefreshTokenFilter;
-import hsge.hsgeback.security.filter.TokenCheckFilter;
+import hsge.hsgeback.security.filter.*;
 import hsge.hsgeback.security.handler.LoginFailureHandler;
 import hsge.hsgeback.security.handler.LoginSuccessHandler;
 import hsge.hsgeback.util.JWTUtil;
@@ -36,7 +34,10 @@ public class SecurityConfig {
 
     private final WebClient webClient;
     private final KakaoUserDetailService kakaoUserDetailService;
+    private final UserRepository userRepository;
     private final JWTUtil jwtUtil;
+    @Value("${report-count}")
+    private int reportCount;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -74,6 +75,8 @@ public class SecurityConfig {
 
         http.addFilterBefore(tokenCheckFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new RefreshTokenFilter("/api/auth/refresh-token", jwtUtil), TokenCheckFilter.class);
+
+        http.addFilterBefore(new ReportCheckFilter(jwtUtil, userRepository, reportCount), RefreshTokenFilter.class);
 
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

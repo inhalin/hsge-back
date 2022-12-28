@@ -83,7 +83,7 @@ public class SignupDto {
         return User.builder()
                 .nickname(getNickname())
                 .latitude(getLatitude())
-                .longtitude(getLongtitude())
+                .longitude(getLongtitude())
                 .profilePath(getProfilePath())
                 .email(getEmail())
                 .town(getTown())
