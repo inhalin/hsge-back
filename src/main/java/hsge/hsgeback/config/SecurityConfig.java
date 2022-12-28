@@ -1,6 +1,6 @@
 package hsge.hsgeback.config;
 
-import hsge.hsgeback.repository.UserRepository;
+import hsge.hsgeback.repository.user.UserRepository;
 import hsge.hsgeback.security.KakaoUserDetailService;
 import hsge.hsgeback.security.filter.*;
 import hsge.hsgeback.security.handler.LoginFailureHandler;
@@ -8,7 +8,6 @@ import hsge.hsgeback.security.handler.LoginSuccessHandler;
 import hsge.hsgeback.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -76,13 +75,13 @@ public class SecurityConfig {
         http.addFilterBefore(tokenCheckFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new RefreshTokenFilter("/api/auth/refresh-token", jwtUtil), TokenCheckFilter.class);
 
-        http.addFilterBefore(new ReportCheckFilter(jwtUtil, userRepository, reportCount), RefreshTokenFilter.class);
+        http.addFilterAfter(new ReportCheckFilter(jwtUtil, userRepository, reportCount), TokenCheckFilter.class);
 
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeRequests()
-                .antMatchers("/api/**").permitAll()
+                .antMatchers("/api/**", "/ws/**").permitAll()
                 .anyRequest().denyAll();
 
         return http.build();

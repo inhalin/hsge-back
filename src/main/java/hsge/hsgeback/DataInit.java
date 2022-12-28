@@ -8,7 +8,10 @@ import hsge.hsgeback.entity.PetImg;
 import hsge.hsgeback.entity.User;
 import hsge.hsgeback.repository.PetImgRepository;
 import hsge.hsgeback.repository.PetRepository;
+import hsge.hsgeback.repository.chat.ChatroomRepository;
+import hsge.hsgeback.repository.chat.MessageRepository;
 import hsge.hsgeback.repository.user.UserRepository;
+import hsge.hsgeback.entity.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -28,6 +31,8 @@ public class DataInit {
     private final UserRepository userRepository;
     private final PetRepository petRepository;
     private final PetImgRepository petImgRepository;
+    private final ChatroomRepository chatroomRepository;
+    private final MessageRepository messageRepository;
 
     @PostConstruct
     void init() {
@@ -100,5 +105,42 @@ public class DataInit {
             petImgRepository.save(petImgDto.toPetImgEntity(pet2));
             temp--;
         }
+
+        User user1 = userRepository.findById(1L).orElseThrow();
+        User user2 = userRepository.findById(2L).orElseThrow();
+        Chatroom chatroom = Chatroom.builder().likeUser(user1).likedUser(user2).build();
+        chatroomRepository.save(chatroom);
+
+        Chatroom chatroom1 = createChatroom(2L, 3L);
+        Chatroom chatroom2 = createChatroom(2L, 4L);
+        Chatroom chatroom3 = createChatroom(2L, 5L);
+
+        Message message1 = new Message("안녕하세요. 홍석주입니다.", chatroom, user1);
+        Message message2 = new Message("안녕하세요. 이태민입니다.", chatroom, user2);
+        Message message3 = new Message("날씨가 덥네요.", chatroom, user2);
+        Message message4 = new Message("그러게요.", chatroom, user1);
+        Message message5 = new Message("전 갑니다.", chatroom, user1);
+        Message message6 = new Message("서윤님.", chatroom, user1);
+        Message message7 = new Message("화이팅", chatroom, user1);
+        Message message8 = new Message("!!!", chatroom, user1);
+
+        messageRepository.save(message1);
+        messageRepository.save(message2);
+        messageRepository.save(message3);
+        messageRepository.save(message4);
+        messageRepository.save(message5);
+        messageRepository.save(message6);
+        messageRepository.save(message7);
+        messageRepository.save(message8);
+
+
     }
+
+    private Chatroom createChatroom(Long userId1, Long userId2) {
+        User user1 = userRepository.findById(userId1).orElseThrow();
+        User user2 = userRepository.findById(userId2).orElseThrow();
+        Chatroom chatroom = Chatroom.builder().likeUser(user1).likedUser(user2).build();
+        return chatroomRepository.save(chatroom);
+    }
+
 }

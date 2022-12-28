@@ -68,6 +68,7 @@ public class ChatroomRepositoryImpl implements ChatroomRepositoryCustom {
 
     private ChatSimpleDto mapToChatSimpleDto(Chatroom chat, Message message) {
         return ChatSimpleDto.builder()
+                .roomId(chat.getId())
                 .nickname(chat.getLikeUser().getNickname())
                 .profilePath(chat.getLikeUser().getProfilePath())
                 .active(chat.getActive())
