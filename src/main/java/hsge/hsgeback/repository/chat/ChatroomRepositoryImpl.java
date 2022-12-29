@@ -7,6 +7,7 @@ import hsge.hsgeback.entity.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,6 @@ public class ChatroomRepositoryImpl implements ChatroomRepositoryCustom {
                 .fetch();
 
         for (Chatroom chat : chatrooms) {
-            log.info("123 {}", chat.getId());
             Message latestMessageInfo = getLatestMessageInfo(chat);
             ChatSimpleDto dto = mapToChatSimpleDto(chat, latestMessageInfo);
 
@@ -52,7 +52,6 @@ public class ChatroomRepositoryImpl implements ChatroomRepositoryCustom {
                 .fetch();
 
         for (Chatroom chat : chatrooms) {
-            log.info("456 {}", chat.getId());
             Message latestMessageInfo = getLatestMessageInfo(chat);
 
             ChatSimpleDto dto = mapToChatSimpleDto(chat, latestMessageInfo);
@@ -70,14 +69,24 @@ public class ChatroomRepositoryImpl implements ChatroomRepositoryCustom {
                 .fetchFirst();
     }
 
+    @Override
+    @Transactional
+    public void updateActive(Long id) {
+        queryFactory.update(chatroom)
+                .set(chatroom.active, true)
+                .where(chatroom.id.eq(id))
+                .execute();
+    }
+
     private ChatSimpleDto mapToChatSimpleDto(Chatroom chat, Message message) {
         return ChatSimpleDto.builder()
                 .roomId(chat.getId())
                 .nickname(chat.getLikeUser().getNickname())
                 .profilePath(chat.getLikeUser().getProfilePath())
                 .active(chat.getActive())
-                .latestMessage(message == null ? "널!!!!!" : message.getContent())
+                .latestMessage(message == null ? "" : message.getContent())
                 .checked(message != null && message.isChecked())
+                .date(message != null ? message.getCreatedAt().toLocalDate() : chat.getCreatedAt().toLocalDate())
                 .build();
     }
 

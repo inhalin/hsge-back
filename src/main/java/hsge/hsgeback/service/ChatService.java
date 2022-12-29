@@ -52,6 +52,8 @@ public class ChatService {
 
         Chatroom reverse = chatroomRepository.findByUserEmails(matchDto.getPetOwnerEmail(), matchDto.getLikerEmail());
         if (reverse != null) {
+            chatroomRepository.updateActive(reverse.getId());
+
             log.info("당신의 강아지를 좋아하는 사람과의 채팅방이 존재합니다. 메시지를 보납니다.");
 
             User owner = userRepository.findById(reverse.getLikedUser().getId())

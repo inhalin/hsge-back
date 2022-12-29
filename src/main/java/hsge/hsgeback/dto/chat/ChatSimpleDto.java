@@ -1,6 +1,9 @@
 package hsge.hsgeback.dto.chat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -15,4 +18,7 @@ public class ChatSimpleDto {
     private String latestMessage;
     private Boolean checked;
     private Boolean active;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate date;
 }

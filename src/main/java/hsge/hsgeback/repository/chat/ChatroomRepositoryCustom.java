@@ -12,4 +12,6 @@ public interface ChatroomRepositoryCustom {
     List<ChatSimpleDto> findAllByOther(Long userId);
 
     Chatroom findByUserEmails(String user1Email, String user2Email);
+
+    void updateActive(Long id);
 }
