@@ -32,4 +32,8 @@ public class Chatroom extends BaseEntity {
 
     @OneToMany(mappedBy = "chatroom", fetch = LAZY)
     private List<Message> messageList = new ArrayList<>();
+
+    public void activeChatroom() {
+        this.active = true;
+    }
 }

@@ -153,4 +153,26 @@ public class ChatService {
 
         return new MessageDto(userInfo, result);
     }
+
+    @Transactional
+    public void activeRoom(String email, Long roomId) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
+        Chatroom chatroom = chatroomRepository.findById(roomId)
+                .orElseThrow();
+
+        User likeUser = chatroom.getLikeUser();
+        User likedUser = chatroom.getLikedUser();
+
+        Long currentUserId = user.getId();
+        Long likeUserId = likeUser.getId();
+        Long likedUserId = likedUser.getId();
+
+        if (!Objects.equals(currentUserId, likeUserId) && !Objects.equals(currentUserId, likedUserId)) {
+            throw new NotOwnerException();
+        }
+
+        chatroom.activeChatroom();
+    }
 }
