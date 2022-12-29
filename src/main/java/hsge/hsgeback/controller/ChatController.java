@@ -12,10 +12,7 @@ import hsge.hsgeback.service.ChatService;
 import hsge.hsgeback.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -40,5 +37,11 @@ public class ChatController {
     public MessageDto getChatMessages(HttpServletRequest request, @PathVariable Long roomId) {
         String email = jwtUtil.getEmail(request);
         return chatService.getChatMessages(email, roomId);
+    }
+
+    @PostMapping("/{roomId}/active")
+    public void activeRoom(HttpServletRequest request, @PathVariable Long roomId) {
+        String email = jwtUtil.getEmail(request);
+        chatService.activeRoom(email, roomId);
     }
 }

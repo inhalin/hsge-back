@@ -32,7 +32,6 @@ public class ChatroomRepositoryImpl implements ChatroomRepositoryCustom {
                 .fetch();
 
         for (Chatroom chat : chatrooms) {
-            log.info("123 {}", chat.getId());
             Message latestMessageInfo = getLatestMessageInfo(chat);
             ChatSimpleDto dto = mapToChatSimpleDto(chat, latestMessageInfo);
 
@@ -52,7 +51,6 @@ public class ChatroomRepositoryImpl implements ChatroomRepositoryCustom {
                 .fetch();
 
         for (Chatroom chat : chatrooms) {
-            log.info("456 {}", chat.getId());
             Message latestMessageInfo = getLatestMessageInfo(chat);
 
             ChatSimpleDto dto = mapToChatSimpleDto(chat, latestMessageInfo);

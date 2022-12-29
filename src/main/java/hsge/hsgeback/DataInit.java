@@ -106,8 +106,8 @@ public class DataInit {
             temp--;
         }
 
-        User user1 = userRepository.findById(1L).orElseThrow();
-        User user2 = userRepository.findById(2L).orElseThrow();
+        User user1 = userRepository.findById(5L).orElseThrow();
+        User user2 = userRepository.findById(3L).orElseThrow();
         Chatroom chatroom = Chatroom.builder().likeUser(user1).likedUser(user2).build();
         chatroomRepository.save(chatroom);
 
