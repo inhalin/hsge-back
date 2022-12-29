@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,14 +22,16 @@ public class Chatroom extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     private User likeUser;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     private User likedUser;
 
     @Column(columnDefinition = "tinyint")
     private Boolean active;
+
+    private LocalDateTime leftAt;
 
     @OneToMany(mappedBy = "chatroom", fetch = LAZY)
     private List<Message> messageList = new ArrayList<>();

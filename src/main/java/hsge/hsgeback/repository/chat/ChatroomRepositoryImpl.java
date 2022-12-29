@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,8 +29,10 @@ public class ChatroomRepositoryImpl implements ChatroomRepositoryCustom {
         List<ChatSimpleDto> dtoList = new ArrayList<>();
         List<Chatroom> chatrooms = queryFactory
                 .selectFrom(chatroom)
-                .join(chatroom.likeUser, user).fetchJoin()
-                .where(chatroom.likeUser.id.eq(userId), chatroom.active.eq(true))
+                .leftJoin(chatroom.likeUser, user).fetchJoin()
+                .where(chatroom.leftAt.isNull())
+                .where(chatroom.likeUser.id.eq(userId),
+                        chatroom.active.eq(true))
                 .fetch();
 
         for (Chatroom chat : chatrooms) {
@@ -47,7 +50,8 @@ public class ChatroomRepositoryImpl implements ChatroomRepositoryCustom {
         List<ChatSimpleDto> dtoList = new ArrayList<>();
         List<Chatroom> chatrooms = queryFactory
                 .selectFrom(chatroom)
-                .join(chatroom.likedUser, user).fetchJoin()
+                .leftJoin(chatroom.likedUser, user).fetchJoin()
+                .where(chatroom.leftAt.isNull())
                 .where(chatroom.likedUser.id.eq(userId))
                 .fetch();
 
@@ -64,6 +68,7 @@ public class ChatroomRepositoryImpl implements ChatroomRepositoryCustom {
     @Override
     public Chatroom findByUserEmails(String user1Email, String user2Eamil) {
         return queryFactory.selectFrom(chatroom)
+                .where(chatroom.leftAt.isNull())
                 .where(chatroom.likeUser.email.eq(user1Email),
                         chatroom.likedUser.email.eq(user2Eamil))
                 .fetchFirst();
@@ -75,6 +80,15 @@ public class ChatroomRepositoryImpl implements ChatroomRepositoryCustom {
         queryFactory.update(chatroom)
                 .set(chatroom.active, true)
                 .where(chatroom.id.eq(id))
+                .execute();
+    }
+
+    @Override
+    public void leaveChatroom(Long roomId) {
+        queryFactory.update(chatroom)
+                .set(chatroom.leftAt, LocalDateTime.now())
+                .set(chatroom.active, false)
+                .where(chatroom.id.eq(roomId))
                 .execute();
     }
 

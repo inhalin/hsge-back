@@ -2,5 +2,9 @@ package hsge.hsgeback.repository.match;
 
 public interface MatchRepositoryCustom {
 
-    boolean existsByPetIdAndLikerId(Long petId, Long LikerId);
+    boolean existsByPetIdAndUserId(Long petId, Long LikerId);
+
+    void deleteAllByPetIdAndUserId(Long petId, Long userId);
+
+    void updateLikeValue(Long petId, Long userId, boolean likeValue);
 }

@@ -1,19 +1,21 @@
 package hsge.hsgeback.service;
 
 import hsge.hsgeback.constant.PushNotification;
+import hsge.hsgeback.dto.chat.ChatLeaveRequest;
 import hsge.hsgeback.dto.chat.ChatSimpleDto;
+import hsge.hsgeback.dto.common.BasicResponse;
 import hsge.hsgeback.dto.match.UserPetMatchDto;
 import hsge.hsgeback.dto.response.MessageDto;
 import hsge.hsgeback.dto.response.MessageResponseDto;
 import hsge.hsgeback.dto.response.MessageUserInfoDto;
-import hsge.hsgeback.entity.Chatroom;
-import hsge.hsgeback.entity.Message;
-import hsge.hsgeback.entity.User;
+import hsge.hsgeback.entity.*;
 import hsge.hsgeback.exception.NotOwnerException;
 import hsge.hsgeback.exception.ResourceNotFoundException;
+import hsge.hsgeback.repository.pet.PetRepository;
 import hsge.hsgeback.repository.chat.ChatroomRepositoryImpl;
 import hsge.hsgeback.repository.chat.ChatroomRepository;
 import hsge.hsgeback.repository.chat.MessageRepository;
+import hsge.hsgeback.repository.match.MatchRepository;
 import hsge.hsgeback.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +37,8 @@ public class ChatService {
     private final ChatroomRepositoryImpl chatroomCustomRepository;
     private final UserRepository userRepository;
     private final MessageRepository messageRepository;
+    private final MatchRepository matchRepository;
+    private final PetRepository petRepository;
 
     public void manageChatMessage(UserPetMatchDto matchDto) {
 
@@ -174,5 +178,53 @@ public class ChatService {
         }
 
         chatroom.activeChatroom();
+    }
+
+    @Transactional
+    public BasicResponse leaveChatroom(String email, Long roomId, ChatLeaveRequest request) {
+
+        Chatroom chatroom = chatroomRepository.findById(roomId)
+                .orElseThrow(() -> new ResourceNotFoundException("Chatroom", "id", roomId.toString()));
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
+        List<Pet> myPets = petRepository.findAllByUserId(user.getId());
+
+        if (chatroom.getLikeUser().getId().equals(user.getId()) && !chatroom.getActive()) {
+            throw new IllegalArgumentException("내가 좋아요 한 강아지의 채팅방이 시작되지 않은 경우 채팅방을 먼저 나갈 수 없습니다.");
+        }
+
+        User counter = userRepository.findById(request.getCounterUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", request.getCounterUserId().toString()));
+        List<Pet> counterPets = petRepository.findAllByUserId(counter.getId());
+
+        if (request.getType().equals(ChatLeaveType.DEFAULT)) {
+            chatroomRepository.leaveChatroom(roomId);
+            counterPets.forEach(pet -> matchRepository.deleteAllByPetIdAndUserId(pet.getId(), user.getId()));
+            myPets.forEach(pet -> matchRepository.deleteAllByPetIdAndUserId(pet.getId(), counter.getId()));
+
+            return BasicResponse.of(roomId, "정상적으로 채팅방을 나갔습니다.");
+        } else if (request.getType().equals(ChatLeaveType.REPORT)
+                || request.getType().equals(ChatLeaveType.UNMATCH)) {
+            chatroomRepository.leaveChatroom(roomId);
+            counterPets.forEach(pet -> {
+                if (matchRepository.existsByPetIdAndUserId(pet.getId(), user.getId())) {
+                    matchRepository.updateLikeValue(pet.getId(), user.getId(), false);
+                } else {
+                    matchRepository.save(Match.builder().likeValue(false).pet(pet).user(user).build());
+                }
+            });
+            myPets.forEach(pet -> {
+                if (matchRepository.existsByPetIdAndUserId(pet.getId(), counter.getId())) {
+                    matchRepository.updateLikeValue(pet.getId(), counter.getId(), false);
+                } else {
+                    matchRepository.save(Match.builder().likeValue(false).pet(pet).user(counter).build());
+                }
+            });
+
+            return BasicResponse.of(roomId, "정상적으로 채팅방을 나가고 상대를 차단했습니다.");
+        } else {
+            throw new IllegalArgumentException("요청 타입이 잘못되었습니다.");
+        }
     }
 }
