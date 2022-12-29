@@ -5,6 +5,7 @@ import hsge.hsgeback.dto.chat.ChatSimpleDto;
 import hsge.hsgeback.entity.Chatroom;
 import hsge.hsgeback.entity.Message;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import static hsge.hsgeback.entity.QChatroom.chatroom;
 import static hsge.hsgeback.entity.QMessage.message;
 import static hsge.hsgeback.entity.QUser.user;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class ChatroomRepositoryImpl implements ChatroomRepositoryCustom {
@@ -30,6 +32,7 @@ public class ChatroomRepositoryImpl implements ChatroomRepositoryCustom {
                 .fetch();
 
         for (Chatroom chat : chatrooms) {
+            log.info("123 {}", chat.getId());
             Message latestMessageInfo = getLatestMessageInfo(chat);
             ChatSimpleDto dto = mapToChatSimpleDto(chat, latestMessageInfo);
 
@@ -49,6 +52,7 @@ public class ChatroomRepositoryImpl implements ChatroomRepositoryCustom {
                 .fetch();
 
         for (Chatroom chat : chatrooms) {
+            log.info("456 {}", chat.getId());
             Message latestMessageInfo = getLatestMessageInfo(chat);
 
             ChatSimpleDto dto = mapToChatSimpleDto(chat, latestMessageInfo);
@@ -72,8 +76,8 @@ public class ChatroomRepositoryImpl implements ChatroomRepositoryCustom {
                 .nickname(chat.getLikeUser().getNickname())
                 .profilePath(chat.getLikeUser().getProfilePath())
                 .active(chat.getActive())
-                .latestMessage(message.getContent())
-                .checked(message.isChecked())
+                .latestMessage(message == null ? "널!!!!!" : message.getContent())
+                .checked(message != null && message.isChecked())
                 .build();
     }
 

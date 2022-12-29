@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,21 +38,7 @@ public class ChatController {
 
     @GetMapping("/{roomId}")
     public MessageDto getChatMessages(HttpServletRequest request, @PathVariable Long roomId) {
-        Chatroom chatroom = chatroomRepository.findById(roomId).orElseThrow();
-        User likeUser = chatroom.getLikeUser();
-        User likedUser = chatroom.getLikedUser();
-        MessageUserInfoDto userInfo = new MessageUserInfoDto(likeUser.getId(), likedUser.getId(), likedUser.getNickname(), likedUser.getProfilePath());
-
-        List<Message> messageList = chatroom.getMessageList();
-        List<MessageResponseDto> result = messageList.stream()
-                .map(m -> {
-                    MessageResponseDto dto = new MessageResponseDto();
-                    dto.setSenderId(m.getUser().getId());
-                    dto.setMessage(m.getContent());
-                    dto.setCreatedDate(m.getCreatedAt());
-                    return dto;
-                }).collect(Collectors.toList());
-
-        return new MessageDto(userInfo, result);
+        String email = jwtUtil.getEmail(request);
+        return chatService.getChatMessages(email, roomId);
     }
 }

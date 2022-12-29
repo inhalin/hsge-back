@@ -1,6 +1,7 @@
 package hsge.hsgeback.event.match;
 
 import hsge.hsgeback.dto.match.UserPetMatchDto;
+
 public class MatchedEvent {
 
     private final UserPetMatchDto userPetMatchDto;

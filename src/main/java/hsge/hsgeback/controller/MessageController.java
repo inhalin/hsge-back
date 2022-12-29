@@ -9,12 +9,10 @@ import hsge.hsgeback.repository.chat.ChatroomRepository;
 import hsge.hsgeback.repository.chat.MessageRepository;
 import hsge.hsgeback.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
-@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class MessageController {

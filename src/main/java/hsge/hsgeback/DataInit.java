@@ -114,6 +114,8 @@ public class DataInit {
         Chatroom chatroom1 = createChatroom(2L, 3L);
         Chatroom chatroom2 = createChatroom(2L, 4L);
         Chatroom chatroom3 = createChatroom(2L, 5L);
+        createChatroom(4L, 3L);
+        createChatroom(5L, 3L);
 
         Message message1 = new Message("안녕하세요. 홍석주입니다.", chatroom, user1);
         Message message2 = new Message("안녕하세요. 이태민입니다.", chatroom, user2);
@@ -139,7 +141,7 @@ public class DataInit {
     private Chatroom createChatroom(Long userId1, Long userId2) {
         User user1 = userRepository.findById(userId1).orElseThrow();
         User user2 = userRepository.findById(userId2).orElseThrow();
-        Chatroom chatroom = Chatroom.builder().likeUser(user1).likedUser(user2).build();
+        Chatroom chatroom = Chatroom.builder().likeUser(user1).likedUser(user2).active(false).build();
         return chatroomRepository.save(chatroom);
     }
 
