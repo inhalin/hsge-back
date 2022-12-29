@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class MatchRepositoryImpl implements MatchRepositoryCustom{
+public class MatchRepositoryImpl implements MatchRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
     private final QMatch match = QMatch.match;

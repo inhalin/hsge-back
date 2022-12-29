@@ -37,6 +37,7 @@ public class PetService {
                 .filter(v -> !Objects.equals(v.getId(), findUser.getId()))
                 .map(User::getPets)
                 .flatMap(List::stream)
+                .filter(pet -> petRepository.findMatchablePets(findUser.getId()).contains(pet))
                 .collect(Collectors.toList())
                 .stream()
                 .map(pet -> PetResponseDto.builder()

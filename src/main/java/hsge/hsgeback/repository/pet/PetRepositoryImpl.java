@@ -2,7 +2,6 @@ package hsge.hsgeback.repository.pet;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import hsge.hsgeback.entity.Pet;
-import hsge.hsgeback.entity.QMatch;
 import hsge.hsgeback.entity.QUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
