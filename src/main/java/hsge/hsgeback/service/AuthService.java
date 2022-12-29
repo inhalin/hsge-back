@@ -11,7 +11,7 @@ import hsge.hsgeback.entity.Pet;
 import hsge.hsgeback.entity.PetImg;
 import hsge.hsgeback.entity.User;
 import hsge.hsgeback.exception.NicknameDuplicateException;
-import hsge.hsgeback.repository.PetRepository;
+import hsge.hsgeback.repository.pet.PetRepository;
 import hsge.hsgeback.repository.user.UserRepository;
 import hsge.hsgeback.util.JWTUtil;
 import lombok.RequiredArgsConstructor;

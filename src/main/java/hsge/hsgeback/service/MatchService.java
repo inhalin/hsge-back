@@ -9,7 +9,7 @@ import hsge.hsgeback.event.match.MatchedEventPublisher;
 import hsge.hsgeback.exception.ResourceDuplicateException;
 import hsge.hsgeback.exception.ResourceNotFoundException;
 import hsge.hsgeback.repository.match.MatchRepository;
-import hsge.hsgeback.repository.PetCustomRepository;
+import hsge.hsgeback.repository.pet.PetRepository;
 import hsge.hsgeback.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public class MatchService {
 
     private final MatchRepository matchRepository;
     private final UserRepository userRepository;
-    private final PetCustomRepository petRepository;
+    private final PetRepository petRepository;
     private final ChatService chatService;
     private final MatchedEventPublisher matchedEventPublisher;
 
@@ -33,9 +33,10 @@ public class MatchService {
 
         User liker = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "email", userEmail));
-        Pet pet = petRepository.findById(petId);
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new ResourceNotFoundException("Pet", "id", petId.toString()));
 
-        if (matchRepository.existsByPetIdAndLikerId(pet.getId(), liker.getId())) {
+        if (matchRepository.existsByPetIdAndUserId(pet.getId(), liker.getId())) {
             throw new ResourceDuplicateException("이미 좋아요한 강아지입니다.");
         }
 

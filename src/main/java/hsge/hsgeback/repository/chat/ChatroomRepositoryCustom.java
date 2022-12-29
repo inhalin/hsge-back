@@ -14,4 +14,6 @@ public interface ChatroomRepositoryCustom {
     Chatroom findByUserEmails(String user1Email, String user2Email);
 
     void updateActive(Long id);
+
+    void leaveChatroom(Long roomId);
 }

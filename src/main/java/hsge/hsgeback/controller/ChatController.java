@@ -1,13 +1,9 @@
 package hsge.hsgeback.controller;
 
+import hsge.hsgeback.dto.chat.ChatLeaveRequest;
 import hsge.hsgeback.dto.chat.ChatSimpleDto;
+import hsge.hsgeback.dto.common.BasicResponse;
 import hsge.hsgeback.dto.response.MessageDto;
-import hsge.hsgeback.dto.response.MessageResponseDto;
-import hsge.hsgeback.dto.response.MessageUserInfoDto;
-import hsge.hsgeback.entity.Chatroom;
-import hsge.hsgeback.entity.Message;
-import hsge.hsgeback.entity.User;
-import hsge.hsgeback.repository.chat.ChatroomRepository;
 import hsge.hsgeback.service.ChatService;
 import hsge.hsgeback.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +20,6 @@ public class ChatController {
 
     private final JWTUtil jwtUtil;
     private final ChatService chatService;
-    private final ChatroomRepository chatroomRepository;
 
     @GetMapping
     public ResponseEntity<List<ChatSimpleDto>> list(HttpServletRequest request) {
@@ -43,5 +38,10 @@ public class ChatController {
     public void activeRoom(HttpServletRequest request, @PathVariable Long roomId) {
         String email = jwtUtil.getEmail(request);
         chatService.activeRoom(email, roomId);
+    }
+
+    @PostMapping("/{roomId}/leave")
+    public ResponseEntity<BasicResponse> leave(HttpServletRequest request, @PathVariable Long roomId, @RequestBody ChatLeaveRequest chatLeaveRequest) {
+        return ResponseEntity.ok(chatService.leaveChatroom(jwtUtil.getEmail(request), roomId, chatLeaveRequest));
     }
 }

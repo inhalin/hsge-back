@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.*;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -21,9 +23,9 @@ public class Match extends BaseEntity{
     @Column(columnDefinition = "TINYINT")
     private Boolean likeValue;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     private User user; // 좋아요 누른 사람
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     private Pet pet; // 좋아요 받은 강아지
 }
