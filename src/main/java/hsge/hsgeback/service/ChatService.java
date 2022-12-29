@@ -3,9 +3,13 @@ package hsge.hsgeback.service;
 import hsge.hsgeback.constant.PushNotification;
 import hsge.hsgeback.dto.chat.ChatSimpleDto;
 import hsge.hsgeback.dto.match.UserPetMatchDto;
+import hsge.hsgeback.dto.response.MessageDto;
+import hsge.hsgeback.dto.response.MessageResponseDto;
+import hsge.hsgeback.dto.response.MessageUserInfoDto;
 import hsge.hsgeback.entity.Chatroom;
 import hsge.hsgeback.entity.Message;
 import hsge.hsgeback.entity.User;
+import hsge.hsgeback.exception.NotOwnerException;
 import hsge.hsgeback.exception.ResourceNotFoundException;
 import hsge.hsgeback.repository.chat.ChatroomRepositoryImpl;
 import hsge.hsgeback.repository.chat.ChatroomRepository;
@@ -18,8 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class ChatService {
@@ -110,5 +117,38 @@ public class ChatService {
         chats.addAll(chatsByOther);
 
         return chats;
+    }
+
+    public MessageDto getChatMessages(String email, Long roomId) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
+        Chatroom chatroom = chatroomRepository.findById(roomId)
+                .orElseThrow();
+
+        User likeUser = chatroom.getLikeUser();
+        User likedUser = chatroom.getLikedUser();
+
+        Long currentUserId = user.getId();
+        Long likeUserId = likeUser.getId();
+        Long likedUserId = likedUser.getId();
+
+        if (!Objects.equals(currentUserId, likeUserId) && !Objects.equals(currentUserId, likedUserId)) {
+            throw new NotOwnerException();
+        }
+
+        User otherUser = Objects.equals(currentUserId, likeUserId) ? likedUser : likeUser;
+        MessageUserInfoDto userInfo = new MessageUserInfoDto(currentUserId, otherUser.getId(), otherUser.getNickname(), otherUser.getProfilePath());
+
+        List<Message> messageList = chatroom.getMessageList();
+        List<MessageResponseDto> result = messageList.stream()
+                .map(m -> {
+                    MessageResponseDto dto = new MessageResponseDto();
+                    dto.setSenderId(m.getUser().getId());
+                    dto.setMessage(m.getContent());
+                    dto.setCreatedDate(m.getCreatedAt());
+                    return dto;
+                }).collect(Collectors.toList());
+
+        return new MessageDto(userInfo, result);
     }
 }
