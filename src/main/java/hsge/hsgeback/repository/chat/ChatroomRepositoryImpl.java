@@ -37,7 +37,7 @@ public class ChatroomRepositoryImpl implements ChatroomRepositoryCustom {
 
         for (Chatroom chat : chatrooms) {
             Message latestMessageInfo = getLatestMessageInfo(chat);
-            ChatSimpleDto dto = mapToChatSimpleDto(chat, latestMessageInfo);
+            ChatSimpleDto dto = mapToChatsByMe(chat, latestMessageInfo);
 
             dtoList.add(dto);
         }
@@ -58,7 +58,7 @@ public class ChatroomRepositoryImpl implements ChatroomRepositoryCustom {
         for (Chatroom chat : chatrooms) {
             Message latestMessageInfo = getLatestMessageInfo(chat);
 
-            ChatSimpleDto dto = mapToChatSimpleDto(chat, latestMessageInfo);
+            ChatSimpleDto dto = mapToChatsByOther(chat, latestMessageInfo);
 
             dtoList.add(dto);
         }
@@ -92,7 +92,19 @@ public class ChatroomRepositoryImpl implements ChatroomRepositoryCustom {
                 .execute();
     }
 
-    private ChatSimpleDto mapToChatSimpleDto(Chatroom chat, Message message) {
+    private ChatSimpleDto mapToChatsByMe(Chatroom chat, Message message) {
+        return ChatSimpleDto.builder()
+                .roomId(chat.getId())
+                .nickname(chat.getLikedUser().getNickname())
+                .profilePath(chat.getLikedUser().getProfilePath())
+                .active(chat.getActive())
+                .latestMessage(message == null ? "" : message.getContent())
+                .checked(message != null && message.isChecked())
+                .date(message != null ? message.getCreatedAt().toLocalDate() : chat.getCreatedAt().toLocalDate())
+                .build();
+    }
+
+    private ChatSimpleDto mapToChatsByOther(Chatroom chat, Message message) {
         return ChatSimpleDto.builder()
                 .roomId(chat.getId())
                 .nickname(chat.getLikeUser().getNickname())
