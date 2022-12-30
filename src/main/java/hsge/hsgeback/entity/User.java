@@ -17,7 +17,7 @@ import java.util.List;
 @DynamicInsert
 @AllArgsConstructor
 @Builder
-public class User extends BaseEntity{
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,23 +52,20 @@ public class User extends BaseEntity{
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pet> pets = new ArrayList<>();
 
-    @OneToMany(mappedBy = "reporter")
+    @OneToMany(mappedBy = "reporter", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Report> reporter;
 
-    @OneToMany(mappedBy = "reportee")
+    @OneToMany(mappedBy = "reportee", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Report> reportee = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Match> matchList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "likeUser")
+    @OneToMany(mappedBy = "likeUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Chatroom> likeUser;
 
-    @OneToMany(mappedBy = "likedUser")
+    @OneToMany(mappedBy = "likedUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Chatroom> likedUser;
-
-    @OneToMany(mappedBy = "user")
-    private List<Message> messageList = new ArrayList<>();
 
     private String fcmToken;
 
@@ -95,13 +92,13 @@ public class User extends BaseEntity{
     public void setTown(String town) {
         this.town = town;
     }
-    
+
     public void setReportCount(int reportCount) {
         this.reportCount = reportCount;
     }
 
     public void setValid(Boolean valid) {
-        isValid = valid; 
+        isValid = valid;
     }
 
 

@@ -75,7 +75,7 @@ public class SecurityConfig {
         http.addFilterBefore(tokenCheckFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new RefreshTokenFilter("/api/auth/refresh-token", jwtUtil), TokenCheckFilter.class);
 
-        http.addFilterAfter(new ReportCheckFilter(jwtUtil, userRepository, reportCount), TokenCheckFilter.class);
+//        http.addFilterAfter(new ReportCheckFilter(jwtUtil, userRepository, reportCount), TokenCheckFilter.class);
 
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

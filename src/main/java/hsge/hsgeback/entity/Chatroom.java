@@ -33,7 +33,7 @@ public class Chatroom extends BaseEntity {
 
     private LocalDateTime leftAt;
 
-    @OneToMany(mappedBy = "chatroom", fetch = LAZY)
+    @OneToMany(mappedBy = "chatroom", fetch = LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messageList = new ArrayList<>();
 
     public void activeChatroom() {
