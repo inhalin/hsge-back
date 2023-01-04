@@ -1,6 +1,5 @@
 package hsge.hsgeback.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,8 +14,6 @@ import java.util.List;
 @Getter
 @Entity
 @DynamicInsert
-@AllArgsConstructor
-@Builder
 public class User extends BaseEntity {
 
     @Id
@@ -62,12 +59,32 @@ public class User extends BaseEntity {
     private List<Match> matchList = new ArrayList<>();
 
     @OneToMany(mappedBy = "likeUser", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Chatroom> likeUser;
+    private List<Chatroom> likeUser = new ArrayList<>();
 
     @OneToMany(mappedBy = "likedUser", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Chatroom> likedUser;
+    private List<Chatroom> likedUser = new ArrayList<>();
 
-    private String fcmToken;
+    @Builder
+    public User(Long id, String email, String nickname, String password, Double latitude, Double longitude, String role, String town, int profilePath, int reportCount, Boolean isValid, Double radius, List<Pet> pets, List<Report> reporter, List<Report> reportee, List<Match> matchList, List<Chatroom> likeUser, List<Chatroom> likedUser) {
+        this.id = id;
+        this.email = email;
+        this.nickname = nickname;
+        this.password = password;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.role = role;
+        this.town = town;
+        this.profilePath = profilePath;
+        this.reportCount = reportCount;
+        this.isValid = isValid;
+        this.radius = radius;
+        this.pets = pets;
+        this.reporter = reporter;
+        this.reportee = reportee;
+        this.matchList = matchList;
+        this.likeUser = likeUser;
+        this.likedUser = likedUser;
+    }
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
