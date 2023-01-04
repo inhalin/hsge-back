@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class MatchedEventPublisher {
+public class MatchEventPublisher {
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
     public void publishEvent(final UserPetMatchDto userPetMatchDto) {
-        applicationEventPublisher.publishEvent(MatchedEvent.of(userPetMatchDto));
+        applicationEventPublisher.publishEvent(MatchEvent.of(userPetMatchDto));
     }
 }

@@ -5,7 +5,7 @@ import hsge.hsgeback.dto.match.UserPetMatchDto;
 import hsge.hsgeback.entity.Match;
 import hsge.hsgeback.entity.Pet;
 import hsge.hsgeback.entity.User;
-import hsge.hsgeback.event.match.MatchedEventPublisher;
+import hsge.hsgeback.event.match.MatchEventPublisher;
 import hsge.hsgeback.exception.ResourceDuplicateException;
 import hsge.hsgeback.exception.ResourceNotFoundException;
 import hsge.hsgeback.repository.match.MatchRepository;
@@ -26,7 +26,7 @@ public class MatchService {
     private final UserRepository userRepository;
     private final PetRepository petRepository;
     private final ChatService chatService;
-    private final MatchedEventPublisher matchedEventPublisher;
+    private final MatchEventPublisher matchedEventPublisher;
 
     @Transactional
     public BasicResponse saveMatch(String userEmail, Long petId, Boolean likeValue) {
