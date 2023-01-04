@@ -61,15 +61,16 @@ public class AuthController {
     
     @PostMapping("/api/auth/fcm/token")
     public ResponseEntity<String> saveFcmToken(HttpServletRequest request, @RequestBody FcmTokenDto tokenDto) {
-        String email = jwtUtil.getEmail(request);
-        authService.saveFcmToken(email, tokenDto.getToken());
-        return ResponseEntity.ok("기기 토큰이 정상적으로 저장되었습니다.");
+        authService.saveFcmToken(jwtUtil.getEmail(request), tokenDto.getToken());
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("기기 토큰이 정상적으로 저장되었습니다.");
     }
 
     @DeleteMapping("/api/auth/fcm/token")
-    public ResponseEntity<String> deleteFcmToken(HttpServletRequest request) {
-        authService.deleteFcmToken(jwtUtil.getEmail(request));
-        return ResponseEntity.ok("기기 토큰이 정상적으로 삭제되었습니다.");
+    public ResponseEntity<String> deleteFcmToken(HttpServletRequest request, @RequestBody FcmTokenDto tokenDto) {
+        authService.deleteFcmToken(jwtUtil.getEmail(request), tokenDto.getToken());
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("기기 토큰이 정상적으로 삭제되었습니다.");
     }
 
     @DeleteMapping("/api/delete") // s3 객체 삭제 //pet-image/2fc7389b-6286-4cb7-8bb6-9e6be17fedd0-87e7180607f6d331fce8c4b2d1b395bb.jpg
