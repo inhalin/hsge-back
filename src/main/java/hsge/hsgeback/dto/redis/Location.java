@@ -3,7 +3,7 @@ package hsge.hsgeback.dto.redis;
 import lombok.Data;
 
 @Data
-public class LocationDto {
+public class Location {
     private String nickname;
     private String name;
     private Double lat;

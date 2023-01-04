@@ -1,11 +1,10 @@
 package hsge.hsgeback.controller;
 
 import hsge.hsgeback.dto.redis.LocationDto;
-import hsge.hsgeback.dto.redis.WalkDto;
+import hsge.hsgeback.dto.redis.ResponseDto;
 import hsge.hsgeback.dto.request.MypageDto;
 import hsge.hsgeback.dto.request.ReportDto;
 import hsge.hsgeback.dto.request.UserPetDto;
-import hsge.hsgeback.entity.User;
 import hsge.hsgeback.service.UserService;
 import hsge.hsgeback.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
@@ -62,24 +61,23 @@ public class UserController {
         String email = jwtUtil.getEmail(request);
         userService.reportUser(email, reportDto);
     }
-
-    @PostMapping("/currentLocation")
-    public ResponseEntity<?> walkLocation(HttpServletRequest request, @RequestBody LocationDto locationDto) {
+    @PostMapping("/location")
+    public ResponseEntity<String> addLocation(@RequestBody LocationDto location, HttpServletRequest request) {
         String email = jwtUtil.getEmail(request);
-        return userService.walkLocation(email, locationDto);
+        userService.add(email, location);
+        return ResponseEntity.ok("success");
     }
 
-    @GetMapping("/currentLocation")
-    public ResponseEntity<LocationDto> getRedisLocation(HttpServletRequest request){
+    @GetMapping("/location/nearby")
+    public ResponseEntity<List<ResponseDto>> locations(HttpServletRequest request) {
         String email = jwtUtil.getEmail(request);
-        LocationDto dto = userService.testRedis(email);
-        return new ResponseEntity<>(dto,HttpStatus.OK);
+        List<ResponseDto> responseDtos = userService.nearByVenues(email);
+        return ResponseEntity.ok(responseDtos);
     }
 
-    @GetMapping("/handShake")
-    public ResponseEntity<List<WalkDto>> handShake(HttpServletRequest request){
-        String email = jwtUtil.getEmail(request);
-        List<WalkDto> dto = userService.getWalkAround(email);
-        return new ResponseEntity<>(dto,HttpStatus.OK);
+    @DeleteMapping("/location/delete")
+    public ResponseEntity<?> deleteRedisData(@RequestBody LocationDto locationDto) {
+        userService.deleteRedisData(locationDto);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
