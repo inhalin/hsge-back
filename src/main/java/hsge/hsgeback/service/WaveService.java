@@ -8,6 +8,7 @@ import hsge.hsgeback.exception.ResourceNotFoundException;
 import hsge.hsgeback.repository.user.UserRepository;
 import hsge.hsgeback.repository.user.UserTokenRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Map;
 import static hsge.hsgeback.constant.PushNotification.WAVE_BODY;
 import static hsge.hsgeback.constant.PushNotification.WAVE_TITLE;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class WaveService {
@@ -40,6 +42,7 @@ public class WaveService {
         Map<String, String> message = fcmService.buildMessage(title, body, image, pushId);
 
         try {
+            log.info("sending push notification for waving.");
             boolean succeeded = fcmService.sendMulticastMessageTo(tokens, message);
 
             if (!succeeded) {
