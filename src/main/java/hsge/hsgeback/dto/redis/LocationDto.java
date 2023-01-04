@@ -1,12 +1,11 @@
 package hsge.hsgeback.dto.redis;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class LocationDto {
-    private Double latitude;
-
-    private Double longitude;
+    private String nickname;
+    private String name;
+    private Double lat;
+    private Double lng;
 }

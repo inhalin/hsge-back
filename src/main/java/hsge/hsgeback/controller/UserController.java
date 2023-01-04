@@ -1,13 +1,10 @@
 package hsge.hsgeback.controller;
 
-import hsge.hsgeback.dto.redis.Location;
 import hsge.hsgeback.dto.redis.LocationDto;
 import hsge.hsgeback.dto.redis.ResponseDto;
-import hsge.hsgeback.dto.redis.WalkDto;
 import hsge.hsgeback.dto.request.MypageDto;
 import hsge.hsgeback.dto.request.ReportDto;
 import hsge.hsgeback.dto.request.UserPetDto;
-import hsge.hsgeback.entity.User;
 import hsge.hsgeback.service.UserService;
 import hsge.hsgeback.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
@@ -65,7 +62,7 @@ public class UserController {
         userService.reportUser(email, reportDto);
     }
     @PostMapping("/location")
-    public ResponseEntity<String> addLocation(@RequestBody Location location, HttpServletRequest request) {
+    public ResponseEntity<String> addLocation(@RequestBody LocationDto location, HttpServletRequest request) {
         String email = jwtUtil.getEmail(request);
         userService.add(email, location);
         return ResponseEntity.ok("success");
@@ -79,8 +76,8 @@ public class UserController {
     }
 
     @DeleteMapping("/location/delete")
-    public ResponseEntity<?> deleteRedisData(@RequestBody Location location) {
-        userService.deleteRedisData(location);
+    public ResponseEntity<?> deleteRedisData(@RequestBody LocationDto locationDto) {
+        userService.deleteRedisData(locationDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

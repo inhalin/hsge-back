@@ -1,6 +1,5 @@
 package hsge.hsgeback.service;
 
-import hsge.hsgeback.dto.redis.Location;
 import hsge.hsgeback.dto.redis.LocationDto;
 import hsge.hsgeback.dto.redis.ResponseDto;
 import hsge.hsgeback.dto.redis.WalkDto;
@@ -44,7 +43,6 @@ public class UserService {
 
     private final ReportRepository reportRepository;
     private final JWTUtil jwtUtil;
-    private final RedisTemplate<String, LocationDto> redisTemplate;
 
 
     public MypageDto getUserProfile(String email) {
@@ -127,69 +125,6 @@ public class UserService {
         reportRepository.save(reportDto.toReportEntity(reporter, reportee));
     }
 
-    @Transactional(readOnly = true)
-    public ResponseEntity<?> walkLocation(String email, LocationDto locationDto) {
-        User user = userRepository.findByEmail(email).orElseThrow();
-        locationDto.setUserId(user.getId());
-        locationDto.setNickname(user.getNickname());
-        ValueOperations<String, LocationDto> vop = redisTemplate.opsForValue();
-        vop.set(user.getNickname(), locationDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    public List<LocationDto> testRedis1(String email) {
-        List<LocationDto> dto = new ArrayList<>();
-        User user = userRepository.findByEmail(email).orElseThrow();
-        ValueOperations<String, LocationDto> stringLocationDtoValueOperations = redisTemplate.opsForValue();
-        ValueOperations<String, LocationDto> vop = redisTemplate.opsForValue();
-        return dto;
-    }
-
-
-    public List<WalkDto> getWalkAround(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow();
-        List<List<Chatroom>> chatrooms = new ArrayList<>();
-        chatrooms.add(user.getLikeUser());
-        chatrooms.add(user.getLikedUser());
-        List<Chatroom> chatrooms1 = chatrooms.stream()
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
-        Set<User> userList = new HashSet<>();
-        List<User> like = chatrooms1.stream()
-                .filter(Chatroom::getActive)
-                .map(Chatroom::getLikeUser)
-                .collect(Collectors.toList());
-        userList.addAll(like);
-        List<User> liked = chatrooms1.stream()
-                .filter(Chatroom::getActive)
-                .map(Chatroom::getLikedUser)
-                .collect(Collectors.toList());
-        userList.addAll(liked);
-        for (User user1 : userList) {
-            System.out.println("user1.getNickname() = " + user1.getNickname());
-        }
-        List<Chatroom> chatroomList = user.getLikeUser();
-        List<User> likeUser = chatroomList.stream()
-                .filter(Chatroom::getActive)
-                .map(Chatroom::getLikedUser)
-                .collect(Collectors.toList());
-        ValueOperations<String, LocationDto> vop = redisTemplate.opsForValue();
-        LocationDto result = vop.get(user.getNickname());
-        Double currentLatitude = result.getLatitude();
-        Double currentLongitude = result.getLongitude();
-        // 3KM 고정
-        return userList.stream()
-                .filter(a -> {
-                    if ((currentLatitude - 0.03 < a.getLatitude()) && (currentLatitude + 0.03 > a.getLatitude()) && (currentLongitude - 0.03 < a.getLongitude()) && (currentLongitude + 0.03 > a.getLongitude()))
-                        return true;
-                    return false;
-                }).collect(Collectors.toList()).stream().map(w -> WalkDto.builder()
-                        .userId(w.getId())
-                        .longitude(w.getLongitude())
-                        .latitude(w.getLatitude())
-                        .nickname(w.getNickname())
-                        .build()).collect(Collectors.toList());
-    }
 
 //    public void add(String email, Location location){
 ////        User findUser = userRepository.findByEmail(email).orElseThrow();
@@ -200,10 +135,10 @@ public class UserService {
 //        geoOperations.add(VENUS_VISITED, point, key);
 //    }
 
-    public void add(String email, Location location){
+    public void add(String email, LocationDto locationDto){
         User findUser = userRepository.findByEmail(email).orElseThrow();
         String key = findUser.getNickname() + ":" + findUser.getId();
-        Point point = new Point(location.getLng(), location.getLat());
+        Point point = new Point(locationDto.getLng(), locationDto.getLat());
         geoOperations.add(VENUS_VISITED, point, key);
     }
 
@@ -269,8 +204,8 @@ public class UserService {
         return result;
     }
 
-    public void deleteRedisData(Location location){
-        User findUser = userRepository.findByNickname(location.getName());
+    public void deleteRedisData(LocationDto locationDto){
+        User findUser = userRepository.findByNickname(locationDto.getName());
         String key = findUser.getNickname() + ":" + findUser.getId();
         geoOperations.remove(VENUS_VISITED, key);
     }
