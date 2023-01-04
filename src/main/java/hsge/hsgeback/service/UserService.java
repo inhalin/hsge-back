@@ -1,6 +1,7 @@
 package hsge.hsgeback.service;
 
 import hsge.hsgeback.dto.redis.LocationDto;
+import hsge.hsgeback.dto.redis.NameDto;
 import hsge.hsgeback.dto.redis.ResponseDto;
 import hsge.hsgeback.dto.redis.WalkDto;
 import hsge.hsgeback.dto.request.MypageDto;
@@ -29,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -135,11 +137,12 @@ public class UserService {
 //        geoOperations.add(VENUS_VISITED, point, key);
 //    }
 
-    public void add(String email, LocationDto locationDto){
+    public NameDto add(String email, LocationDto locationDto) {
         User findUser = userRepository.findByEmail(email).orElseThrow();
         String key = findUser.getNickname() + ":" + findUser.getId();
         Point point = new Point(locationDto.getLng(), locationDto.getLat());
         geoOperations.add(VENUS_VISITED, point, key);
+        return new NameDto(findUser.getNickname());
     }
 
     public List<ResponseDto> nearByVenues(String email) {
@@ -182,9 +185,6 @@ public class UserService {
                 .map(Chatroom::getLikedUser)
                 .collect(Collectors.toList());
         userList.addAll(liked);
-        for (User u : userList) {
-            System.out.println("u.getNickname() = " + u.getNickname());
-        }
 
         List<ResponseDto> result = new ArrayList<>();
 
