@@ -1,6 +1,7 @@
 package hsge.hsgeback.controller;
 
 import hsge.hsgeback.dto.redis.LocationDto;
+import hsge.hsgeback.dto.redis.NameDto;
 import hsge.hsgeback.dto.redis.ResponseDto;
 import hsge.hsgeback.dto.request.MypageDto;
 import hsge.hsgeback.dto.request.ReportDto;
@@ -61,11 +62,12 @@ public class UserController {
         String email = jwtUtil.getEmail(request);
         userService.reportUser(email, reportDto);
     }
+
     @PostMapping("/location")
-    public ResponseEntity<String> addLocation(@RequestBody LocationDto location, HttpServletRequest request) {
+    public ResponseEntity<NameDto> addLocation(@RequestBody LocationDto location, HttpServletRequest request) {
         String email = jwtUtil.getEmail(request);
-        userService.add(email, location);
-        return ResponseEntity.ok("success");
+        NameDto add = userService.add(email, location);
+        return new ResponseEntity<>(add,HttpStatus.OK);
     }
 
     @GetMapping("/location/nearby")
