@@ -15,11 +15,11 @@ public class MessageUtil {
             return message;
         }
 
-        String[] split = message.split(REPLACE_CHAR);
-
-        if (split.length <= 1) {
-            return message;
-        }
+//        String[] split = message.split(REPLACE_CHAR);
+//
+//        if (split.length <= 1) {
+//            return message;
+//        }
 
         for (String arg : args) {
             message = message.replaceFirst(REPLACE_CHAR, arg);

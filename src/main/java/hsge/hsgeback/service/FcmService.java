@@ -36,6 +36,15 @@ public class FcmService {
                 "pushID", pushId);
     }
 
+    public Map<String, String> buildMessage(String title, String body, String image, String pushId, Long id) {
+        return Map.of(
+                "title", title,
+                "body", body,
+                "image", image,
+                "pushID", pushId,
+                "id", id.toString());
+    }
+
     public void sendMessageTo(String targetToken, Map<String, String> messageMap) throws FirebaseMessagingException {
 
         Message message = Message.builder()
@@ -58,7 +67,7 @@ public class FcmService {
         BatchResponse batchResponse = firebaseMessaging.sendMulticast(message);
 
         batchResponse.getResponses()
-                .forEach(r -> log.info("sent response with messageId {} successfully? {}", r.getMessageId(), r.isSuccessful()));
+                .forEach(r -> log.info("response with messageId {} sent successfully? {}", r.getMessageId(), r.isSuccessful()));
 
         return batchResponse.getResponses().stream().allMatch(SendResponse::isSuccessful);
     }

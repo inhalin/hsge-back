@@ -50,6 +50,7 @@ public class MatchEventHandler {
 
         Map<String, String> message = fcmService.buildMessage(title, body, image, pushId);
 
+        log.info("sending push notification for matching.");
         fcmService.sendMulticastMessageTo(fcmTokens, message);
     }
 }
