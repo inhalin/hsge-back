@@ -7,6 +7,7 @@ import hsge.hsgeback.entity.Pet;
 import hsge.hsgeback.entity.PetImg;
 import hsge.hsgeback.entity.User;
 import hsge.hsgeback.exception.NotOwnerException;
+import hsge.hsgeback.repository.match.MatchRepository;
 import hsge.hsgeback.repository.pet.PetRepository;
 import hsge.hsgeback.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 public class PetService {
     private final PetRepository petRepository;
     private final UserRepository userRepository;
+    private final MatchRepository matchRepository;
 
     private final S3Upload s3Upload;
 
@@ -38,6 +40,7 @@ public class PetService {
                 .map(User::getPets)
                 .flatMap(List::stream)
                 .filter(pet -> petRepository.findMatchablePets(findUser.getId()).contains(pet))
+                .filter(pet -> !matchRepository.findAllMatchedPetIds(findUser.getId()).contains(pet.getId()))
                 .collect(Collectors.toList())
                 .stream()
                 .map(pet -> PetResponseDto.builder()

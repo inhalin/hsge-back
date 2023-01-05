@@ -5,6 +5,8 @@ import hsge.hsgeback.entity.QMatch;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class MatchRepositoryImpl implements MatchRepositoryCustom {
@@ -35,5 +37,13 @@ public class MatchRepositoryImpl implements MatchRepositoryCustom {
                 .where(match.pet.id.eq(petId),
                         match.user.id.eq(userId))
                 .execute();
+    }
+
+    @Override
+    public List<Long> findAllMatchedPetIds(Long userId) {
+        return queryFactory.select(match.pet.id)
+                .from(match)
+                .where(match.user.id.eq(userId))
+                .fetch();
     }
 }

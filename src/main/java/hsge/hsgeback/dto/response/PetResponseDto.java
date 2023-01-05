@@ -1,6 +1,5 @@
 package hsge.hsgeback.dto.response;
 
-import hsge.hsgeback.entity.PetImg;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 

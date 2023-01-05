@@ -9,7 +9,11 @@ import java.util.List;
 
 public interface PetRepository extends JpaRepository<Pet, Long>, PetRepositoryCustom {
 
-    @Query(value = "select * from pet left join matching on pet.id=matching.pet_id where like_value is null or matching.user_id != :userId group by pet.id",
+    @Query(value = "select * from pet p" +
+            " left join matching m on p.id = m.pet_id" +
+            " where p.user_id != :userId" +
+            " and m.user_id != :userId" +
+            " or m.user_id is null",
             nativeQuery = true)
     List<Pet> findMatchablePets(@Param("userId") Long userId);
 }
