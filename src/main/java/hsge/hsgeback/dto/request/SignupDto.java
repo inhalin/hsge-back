@@ -87,7 +87,6 @@ public class SignupDto {
                 .profilePath(getProfilePath())
                 .email(getEmail())
                 .town(getTown())
-                .fcmToken(getFcmToken())
                 .build();
     }
 

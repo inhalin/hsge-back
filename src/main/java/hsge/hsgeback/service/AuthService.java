@@ -10,9 +10,13 @@ import hsge.hsgeback.dto.response.SignupTokenResponseDto;
 import hsge.hsgeback.entity.Pet;
 import hsge.hsgeback.entity.PetImg;
 import hsge.hsgeback.entity.User;
+import hsge.hsgeback.entity.UserToken;
 import hsge.hsgeback.exception.NicknameDuplicateException;
+import hsge.hsgeback.exception.ResourceDuplicateException;
+import hsge.hsgeback.exception.ResourceNotFoundException;
 import hsge.hsgeback.repository.pet.PetRepository;
 import hsge.hsgeback.repository.user.UserRepository;
+import hsge.hsgeback.repository.user.UserTokenRepository;
 import hsge.hsgeback.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +31,7 @@ import java.util.*;
 @Service
 public class AuthService {
     private final UserRepository userRepository;
+    private final UserTokenRepository tokenRepository;
     private final PetRepository petRepository;
     private final S3Upload s3Upload;
     private final JWTUtil jwtUtil;
@@ -73,11 +78,25 @@ public class AuthService {
 
     @Transactional
     public void saveFcmToken(String email, String fcmToken) {
-        userRepository.saveFcmToken(email, fcmToken);
+
+        if (tokenExists(email, fcmToken)) {
+            throw new ResourceDuplicateException("중복된 기기 토큰이 이미 존재합니다.");
+        }
+
+        tokenRepository.save(UserToken.of(email, fcmToken));
     }
 
     @Transactional
-    public void deleteFcmToken(String email) {
-        userRepository.deleteFcmToken(email);
+    public void deleteFcmToken(String email, String token) {
+
+        if (!tokenExists(email, token)) {
+            throw new ResourceNotFoundException("User token", "email and token respectively", email + ", " + token);
+        }
+
+        tokenRepository.deleteByEmailAndToken(email, token);
+    }
+
+    private boolean tokenExists(String email, String token) {
+        return tokenRepository.existsByEmailAndToken(email, token);
     }
 }

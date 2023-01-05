@@ -2,16 +2,16 @@ package hsge.hsgeback.event.match;
 
 import hsge.hsgeback.dto.match.UserPetMatchDto;
 
-public class MatchedEvent {
+public class MatchEvent {
 
     private final UserPetMatchDto userPetMatchDto;
 
-    public MatchedEvent(UserPetMatchDto userPetMatchDto) {
+    public MatchEvent(UserPetMatchDto userPetMatchDto) {
         this.userPetMatchDto = userPetMatchDto;
     }
 
-    public static MatchedEvent of(UserPetMatchDto userPetMatchDto) {
-        return new MatchedEvent(userPetMatchDto);
+    public static MatchEvent of(UserPetMatchDto userPetMatchDto) {
+        return new MatchEvent(userPetMatchDto);
     }
 
     public UserPetMatchDto getUserPetMatchDto() {

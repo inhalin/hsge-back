@@ -6,6 +6,7 @@ import hsge.hsgeback.dto.match.UserPetMatchDto;
 import hsge.hsgeback.entity.User;
 import hsge.hsgeback.exception.ResourceNotFoundException;
 import hsge.hsgeback.repository.user.UserRepository;
+import hsge.hsgeback.repository.user.UserTokenRepository;
 import hsge.hsgeback.service.FcmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+import java.util.List;
 import java.util.Map;
 
 import static hsge.hsgeback.constant.PushNotification.LIKE_BODY;
@@ -21,14 +23,15 @@ import static hsge.hsgeback.constant.PushNotification.LIKE_TITLE;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class MatchedEventHandler {
+public class MatchEventHandler {
 
     private final FcmService fcmService;
     private final UserRepository userRepository;
+    private final UserTokenRepository tokenRepository;
 
     @Async
     @TransactionalEventListener
-    public void onMatchedEvent(MatchedEvent event) throws FirebaseMessagingException {
+    public void onMatchEvent(MatchEvent event) throws FirebaseMessagingException {
         UserPetMatchDto matchDto = event.getUserPetMatchDto();
 
         sendNotification(matchDto);
@@ -38,7 +41,7 @@ public class MatchedEventHandler {
 
         User petOwner = userRepository.findByEmail(matchDto.getPetOwnerEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "email", matchDto.getPetOwnerEmail()));
-        String fcmToken = userRepository.getFcmTokenByEmail(petOwner.getEmail());
+        List<String> fcmTokens = tokenRepository.findTokenByEmail(petOwner.getEmail());
 
         String title = LIKE_TITLE.getContent(matchDto.getPetName());
         String body = LIKE_BODY.getContent(matchDto.getLikerNickname());
@@ -47,6 +50,6 @@ public class MatchedEventHandler {
 
         Map<String, String> message = fcmService.buildMessage(title, body, image, pushId);
 
-        fcmService.sendMessageTo(fcmToken, message);
+        fcmService.sendMulticastMessageTo(fcmTokens, message);
     }
 }

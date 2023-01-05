@@ -1,14 +1,18 @@
 package hsge.hsgeback.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingException;
-import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.*;
+import hsge.hsgeback.constant.FcmPushId;
+import hsge.hsgeback.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
+
+import static hsge.hsgeback.constant.FcmPushId.*;
+import static hsge.hsgeback.constant.PushNotification.*;
 
 @Slf4j
 @Service
@@ -42,5 +46,20 @@ public class FcmService {
         String response = firebaseMessaging.send(message);
 
         log.info("response = {}", response);
+    }
+
+    public boolean sendMulticastMessageTo(List<String> targetTokens, Map<String, String> messageMap) throws FirebaseMessagingException {
+
+        MulticastMessage message = MulticastMessage.builder()
+                .addAllTokens(targetTokens)
+                .putAllData(messageMap)
+                        .build();
+
+        BatchResponse batchResponse = firebaseMessaging.sendMulticast(message);
+
+        batchResponse.getResponses()
+                .forEach(r -> log.info("sent response with messageId {} successfully? {}", r.getMessageId(), r.isSuccessful()));
+
+        return batchResponse.getResponses().stream().allMatch(SendResponse::isSuccessful);
     }
 }
