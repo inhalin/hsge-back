@@ -17,6 +17,7 @@ import hsge.hsgeback.exception.ResourceNotFoundException;
 import hsge.hsgeback.repository.pet.PetRepository;
 import hsge.hsgeback.repository.user.UserRepository;
 import hsge.hsgeback.repository.user.UserTokenRepository;
+import hsge.hsgeback.repository.user.UserTokenRepositoryImpl;
 import hsge.hsgeback.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,7 @@ public class AuthService {
             throw new NicknameDuplicateException("존재하는 닉네임입니다.");
         }
         User user = userRepository.save(signupDto.toUserEntity());
+        saveFcmToken(signupDto.getEmail(), signupDto.getFcmToken());
         Pet pet1 = petRepository.save(signupDto.toPetEntity(user));
         PetImg petImg = s3Upload.upload(imgFile, pet1);
         List<PetImg> petImgList = new ArrayList<>();
