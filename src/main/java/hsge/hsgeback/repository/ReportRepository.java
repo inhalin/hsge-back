@@ -12,4 +12,8 @@ public interface ReportRepository extends JpaRepository<Report,Long> {
 
     @Query(value = "select r from Report r where r.reporter =:reporter")
     List<Report> findReportee(@Param(value = "reporter") User reporter);
+
+    List<Report> findByReportee(User user);
+
+    int countByReportee(User user);
 }
