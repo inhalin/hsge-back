@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
@@ -15,6 +16,8 @@ import java.io.IOException;
 @Slf4j
 public class LoginFailureHandler implements AuthenticationFailureHandler {
 
+    private static final String NEED_SIGNUP = "NEED_SIGNUP";
+
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 
@@ -22,7 +25,16 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
 
         Gson gson = new Gson();
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("message", "NEED_SIGNUP");
+
+        String message;
+        if (exception instanceof BadCredentialsException) {
+            message = NEED_SIGNUP;
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            message = exception.getMessage();
+        }
+
+        jsonObject.addProperty("message", message);
 
         String result = gson.toJson(jsonObject);
 

@@ -7,7 +7,7 @@ import hsge.hsgeback.security.handler.LoginFailureHandler;
 import hsge.hsgeback.security.handler.LoginSuccessHandler;
 import hsge.hsgeback.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +24,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 
-@Slf4j
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
@@ -35,7 +34,7 @@ public class SecurityConfig {
     private final KakaoUserDetailService kakaoUserDetailService;
     private final UserRepository userRepository;
     private final JWTUtil jwtUtil;
-//    @Value("${report-count}")
+    @Value("${report-count}")
     private int reportCount;
 
     @Bean
@@ -73,9 +72,9 @@ public class SecurityConfig {
         http.addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.addFilterBefore(tokenCheckFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(new RefreshTokenFilter("/api/auth/refresh-token", jwtUtil), TokenCheckFilter.class);
+        http.addFilterAfter(new ReportCheckFilter(jwtUtil, userRepository, reportCount), TokenCheckFilter.class);
+        http.addFilterAfter(new RefreshTokenFilter("/api/auth/refresh-token", jwtUtil), TokenCheckFilter.class);
 
-//        http.addFilterAfter(new ReportCheckFilter(jwtUtil, userRepository, reportCount), TokenCheckFilter.class);
 
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

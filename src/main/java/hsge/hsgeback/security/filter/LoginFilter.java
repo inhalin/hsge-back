@@ -5,6 +5,8 @@ import hsge.hsgeback.dto.kakao.UserInfo;
 import hsge.hsgeback.exception.TokenException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -46,7 +48,12 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
         UsernamePasswordAuthenticationToken authenticationToken =
             new UsernamePasswordAuthenticationToken(email, "1111");
 
-        return getAuthenticationManager().authenticate(authenticationToken);
+        try {
+            return getAuthenticationManager().authenticate(authenticationToken);
+        } catch (InternalAuthenticationServiceException e) {
+            log.info("로그인 에러 {}", e.getMessage());
+            throw new AuthenticationServiceException("REPORT LIMIT EXCEED");
+        }
     }
 
     private String getEmail(String accessToken) {

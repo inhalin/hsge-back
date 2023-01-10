@@ -25,7 +25,7 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @Profile("dev")
-@Component
+//@Component
 public class DataInit {
 
     private final UserRepository userRepository;
@@ -40,16 +40,13 @@ public class DataInit {
         log.info("dump data init when profile dev");
 
 
-
-
-
-        String[] name = {"홍석주", "신예빈", "이서윤", "안정은","이태민"};
-        String[] email = {"somefood@naver.com", "syb8200@naver.com", "haebalagi77@naver.com", "junnyanne806@naver.com","a@naver.com"};
-        String[] petName = {"포카칩", "수미칩", "오징어집", "감자칩","막시무스","페퍼","후추","먼지","꾸끼","쿠쿠"};
-        String[] likeTag = {"#남자사람,#아이,#공놀이,","#터그놀이,#아이,#사람,","#수영,#대형견,#중형견,","#소형견,#옷입기,#사진찍기,","#잠자기,#간식,#인형,"};
-        String[] disLikeTag = {"#큰소리,#옷입기,#사진찍기,","#향수,#큰소리,#스킨십,","#꼬리만지기,#발만지기,#뽀뽀,","#수영,#사진찍기,#옷입기,","#소형견,#중형견,#암컷,"};
-        String[] gender = {"여","남","여","남","여"};
-        Boolean[] neut = {true,false,true,false,true,false,true,false,true,false};
+        String[] name = {"홍석주", "신예빈", "이서윤", "안정은", "이태민"};
+        String[] email = {"somefood@naver.com", "syb8200@naver.com", "haebalagi77@naver.com", "junnyanne806@naver.com", "a@naver.com"};
+        String[] petName = {"포카칩", "수미칩", "오징어집", "감자칩", "막시무스", "페퍼", "후추", "먼지", "꾸끼", "쿠쿠"};
+        String[] likeTag = {"#남자사람,#아이,#공놀이,", "#터그놀이,#아이,#사람,", "#수영,#대형견,#중형견,", "#소형견,#옷입기,#사진찍기,", "#잠자기,#간식,#인형,"};
+        String[] disLikeTag = {"#큰소리,#옷입기,#사진찍기,", "#향수,#큰소리,#스킨십,", "#꼬리만지기,#발만지기,#뽀뽀,", "#수영,#사진찍기,#옷입기,", "#소형견,#중형견,#암컷,"};
+        String[] gender = {"여", "남", "여", "남", "여"};
+        Boolean[] neut = {true, false, true, false, true, false, true, false, true, false};
         List<PetImg> re = new ArrayList<>();
 
         int temp = 10;
@@ -87,7 +84,7 @@ public class DataInit {
             petImgDto.setOriImgName(originalFileName);
             String savedFileName = uuid.toString() + ".jpg";  // uuid에 확장자만 더해서 저장되는 파일 이름은 uuid.png 이런식으로 저장 된다.
             petImgDto.setS3Url(s3Url);
-            petImgDto.setUuid(key+originalFileName);
+            petImgDto.setUuid(key + originalFileName);
             petImgRepository.save(petImgDto.toPetImgEntity(pet1));
 
             Pet pet2 = Pet.builder()
@@ -95,8 +92,8 @@ public class DataInit {
                     .age(Age.FIVE_MONTHS)
                     .user(user1)
                     .gender(gender[i])
-                    .neutralization(neut[temp-1])
-                    .petName(petName[temp-1])
+                    .neutralization(neut[temp - 1])
+                    .petName(petName[temp - 1])
                     .description("산책을 좋아해요!")
                     .likeTag(likeTag[i])
                     .dislikeTag(disLikeTag[i])
