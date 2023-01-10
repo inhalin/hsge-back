@@ -1,0 +1,21 @@
+spring:
+  redis:
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 10
+        min-idle: 2
+    port: 6379
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+      location: ${user.home}/images
+
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+  jpa:
+    open-in-view: false

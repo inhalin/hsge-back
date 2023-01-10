@@ -1,0 +1,59 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+---
+spring:
+  config:
+    activate:
+      on-profile:
+        - dev, prod
+
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+  datasource:
+    url: jdbc:mariadb://database-hsge.czfim5awnvs3.ap-northeast-2.rds.amazonaws.com:3306/hsge
+    username: hsgeAdmin
+    password: EopliYSTIeps9FKDSKxr
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+  datasource:
+    url: jdbc:mariadb://database-hsge.czfim5awnvs3.ap-northeast-2.rds.amazonaws.com:3306/hsge
+    username: hsgeAdmin
+    password: EopliYSTIeps9FKDSKxr
