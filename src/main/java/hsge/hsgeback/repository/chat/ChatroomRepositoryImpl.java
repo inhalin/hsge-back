@@ -100,7 +100,8 @@ public class ChatroomRepositoryImpl implements ChatroomRepositoryCustom {
                 .active(chat.getActive())
                 .latestMessage(message == null ? "" : message.getContent())
                 .checked(message != null && message.isChecked())
-                .date(message != null ? message.getCreatedAt().toLocalDate() : chat.getCreatedAt().toLocalDate())
+                .firstDate(chat.getCreatedAt().toLocalDate())
+                .lastDate(message != null ? message.getCreatedAt().toLocalDate() : chat.getCreatedAt().toLocalDate())
                 .build();
     }
 
@@ -112,7 +113,8 @@ public class ChatroomRepositoryImpl implements ChatroomRepositoryCustom {
                 .active(chat.getActive())
                 .latestMessage(message == null ? "" : message.getContent())
                 .checked(message != null && message.isChecked())
-                .date(message != null ? message.getCreatedAt().toLocalDate() : chat.getCreatedAt().toLocalDate())
+                .firstDate(chat.getCreatedAt().toLocalDate())
+                .lastDate(message != null ? message.getCreatedAt().toLocalDate() : chat.getCreatedAt().toLocalDate())
                 .build();
     }
 
