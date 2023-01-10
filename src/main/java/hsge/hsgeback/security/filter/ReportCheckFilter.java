@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import hsge.hsgeback.entity.User;
 import hsge.hsgeback.repository.user.UserRepository;
 import hsge.hsgeback.util.JWTUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -13,11 +14,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class ReportCheckFilter extends OncePerRequestFilter {
 
+    private final List<String> whitePathList = Arrays.asList(
+            "/ws",
+            "/api/auth/login",
+            "/api/auth/signup",
+            "/api/auth/duplicate-nickname",
+            "/api/auth/fcm/token",
+            "/api/common"
+    );
     private final JWTUtil jwtUtil;
     private final UserRepository userRepository;
     private final int reportLimit;
@@ -31,7 +43,7 @@ public class ReportCheckFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        if (request.getRequestURI().startsWith("/ws")) {
+        if (checkIfWhitePath(request.getRequestURI())) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -61,5 +73,9 @@ public class ReportCheckFilter extends OncePerRequestFilter {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private boolean checkIfWhitePath(String path) {
+        return whitePathList.stream().anyMatch(path::startsWith);
     }
 }
