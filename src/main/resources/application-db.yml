@@ -21,12 +21,10 @@ spring:
 spring:
   config:
     activate:
-      on-profile:
-        - dev, prod
+      on-profile: dev, prod
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-
 ---
 spring:
   config:
@@ -35,14 +33,13 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     show-sql: true
 
   datasource:
-    url: jdbc:mariadb://database-hsge.czfim5awnvs3.ap-northeast-2.rds.amazonaws.com:3306/hsge
-    username: hsgeAdmin
-    password: EopliYSTIeps9FKDSKxr
-
+    url: jdbc:mariadb://database-hsge.czfim5awnvs3.ap-northeast-2.rds.amazonaws.com:3306/hsge_dev
+    username: hsgeTest
+    password: TeamhsgeTest123
 ---
 spring:
   config:
@@ -51,9 +48,9 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
 
   datasource:
     url: jdbc:mariadb://database-hsge.czfim5awnvs3.ap-northeast-2.rds.amazonaws.com:3306/hsge
-    username: hsgeAdmin
-    password: EopliYSTIeps9FKDSKxr
+    username: hsgeUser
+    password: TeamhsgeUser123!
