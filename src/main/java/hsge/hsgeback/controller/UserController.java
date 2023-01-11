@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -58,7 +59,7 @@ public class UserController {
     }
 
     @PostMapping("/report")
-    public void reportUser(HttpServletRequest request, @RequestBody ReportDto reportDto) {
+    public void reportUser(HttpServletRequest request, @RequestBody ReportDto reportDto) throws IOException {
         String email = jwtUtil.getEmail(request);
         userService.reportUser(email, reportDto);
     }

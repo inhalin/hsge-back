@@ -1,5 +1,10 @@
 package hsge.hsgeback.service;
 
+import com.slack.api.Slack;
+import com.slack.api.model.block.Blocks;
+import com.slack.api.model.block.LayoutBlock;
+import com.slack.api.model.block.composition.BlockCompositions;
+import com.slack.api.webhook.WebhookPayloads;
 import hsge.hsgeback.dto.redis.LocationDto;
 import hsge.hsgeback.dto.redis.NameDto;
 import hsge.hsgeback.dto.redis.ResponseDto;
@@ -8,12 +13,14 @@ import hsge.hsgeback.dto.request.MypageDto;
 import hsge.hsgeback.dto.request.ReportDto;
 import hsge.hsgeback.dto.request.UserPetDto;
 import hsge.hsgeback.entity.Chatroom;
+import hsge.hsgeback.entity.Report;
 import hsge.hsgeback.entity.User;
 import hsge.hsgeback.repository.ReportRepository;
 import hsge.hsgeback.repository.user.UserRepository;
 import hsge.hsgeback.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.geo.*;
 import org.springframework.data.geo.Point;
 import org.springframework.data.redis.connection.RedisGeoCommands;
@@ -27,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -109,7 +117,7 @@ public class UserService {
     }
 
     @Transactional
-    public void reportUser(String email, ReportDto reportDto) {
+    public void reportUser(String email, ReportDto reportDto) throws IOException {
         Optional<User> optional = userRepository.findByEmail(email);
         if (optional.isEmpty()) {
             throw new IllegalArgumentException();
@@ -121,21 +129,31 @@ public class UserService {
         }
         User reportee = optional1.get();
         reportee.setReportCount(reportee.getReportCount() + 1);
-        if (reportee.getReportCount() >= 3) {
+        if (reportee.getReportCount() > 6) {
             reportee.setValid(false);
+            List<Report> byReportee = reportRepository.findByReportee(reportee);
+            List<LayoutBlock> layoutBlocks = Blocks.asBlocks(
+                    getHeader("🚨 7번 신고 당한 회원 탄생 🚨"),
+                    Blocks.divider(),
+                    getSection("☠️ 신고 당한 회원 ☠️ : " + reportee.getNickname()),
+                    Blocks.divider(),
+                    getSection("✅ 신고한 이유 : "),
+                    getSection(byReportee.get(0).getDescription()),
+                    getSection(byReportee.get(1).getDescription()),
+                    getSection(byReportee.get(2).getDescription()),
+                    getSection(byReportee.get(3).getDescription()),
+                    getSection(byReportee.get(4).getDescription()),
+                    getSection(byReportee.get(5).getDescription()),
+                    getSection(byReportee.get(6).getDescription()),
+                    Blocks.divider());
+
+            Slack.getInstance().send("https://hooks.slack.com/services/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",
+                    WebhookPayloads.payload(p -> p.text("유저 신고 알람").blocks(layoutBlocks)));
+
         }
         reportRepository.save(reportDto.toReportEntity(reporter, reportee));
     }
 
-
-//    public void add(String email, Location location){
-////        User findUser = userRepository.findByEmail(email).orElseThrow();
-////        String key = findUser.getNickname() + ":" + findUser.getId();
-//        User findUser = userRepository.findByNickname(location.getName());
-//        String key = location.getName() + ":" + findUser.getId();
-//        Point point = new Point(location.getLng(), location.getLat());
-//        geoOperations.add(VENUS_VISITED, point, key);
-//    }
 
     public NameDto add(String email, LocationDto locationDto) {
         User findUser = userRepository.findByEmail(email).orElseThrow();
@@ -208,5 +226,21 @@ public class UserService {
         User findUser = userRepository.findByNickname(locationDto.getName());
         String key = findUser.getNickname() + ":" + findUser.getId();
         geoOperations.remove(VENUS_VISITED, key);
+    }
+
+
+    @NotNull
+    private LayoutBlock getSection(String message) {
+        return Blocks.section(s ->
+                s.text(BlockCompositions.markdownText(message)));
+    }
+
+
+    @NotNull
+    private LayoutBlock getHeader(String text) {
+        return Blocks.header(h -> h.text(
+                BlockCompositions.plainText(pt -> pt
+                        .emoji(true)
+                        .text(text))));
     }
 }
