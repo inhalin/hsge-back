@@ -8,7 +8,6 @@ import com.slack.api.webhook.WebhookPayloads;
 import hsge.hsgeback.dto.redis.LocationDto;
 import hsge.hsgeback.dto.redis.NameDto;
 import hsge.hsgeback.dto.redis.ResponseDto;
-import hsge.hsgeback.dto.redis.WalkDto;
 import hsge.hsgeback.dto.request.MypageDto;
 import hsge.hsgeback.dto.request.ReportDto;
 import hsge.hsgeback.dto.request.UserPetDto;
@@ -17,18 +16,14 @@ import hsge.hsgeback.entity.Report;
 import hsge.hsgeback.entity.User;
 import hsge.hsgeback.repository.ReportRepository;
 import hsge.hsgeback.repository.user.UserRepository;
+import hsge.hsgeback.repository.user.UserTokenRepository;
 import hsge.hsgeback.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.geo.*;
-import org.springframework.data.geo.Point;
 import org.springframework.data.redis.connection.RedisGeoCommands;
 import org.springframework.data.redis.core.GeoOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.*;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -50,6 +44,7 @@ public class UserService {
     private final GeoOperations<String, String> geoOperations;
 
     private final UserRepository userRepository;
+    private final UserTokenRepository userTokenRepository;
 
     private final ReportRepository reportRepository;
     private final JWTUtil jwtUtil;
@@ -114,6 +109,7 @@ public class UserService {
     @Transactional
     public void withdraw(String email) {
         userRepository.deleteByEmail(email);
+        userTokenRepository.deleteByEmail(email);
     }
 
     @Transactional
@@ -165,7 +161,7 @@ public class UserService {
     }
 
     public List<ResponseDto> nearByVenues(String email) {
-        User findUser= userRepository.findByEmail(email).orElseThrow();
+        User findUser = userRepository.findByEmail(email).orElseThrow();
         String key = findUser.getNickname() + ":" + findUser.getId();
         Point myPosition = Objects.requireNonNull(geoOperations.position(VENUS_VISITED, key)).get(0);
         List<ResponseDto> dto = new ArrayList<>();
@@ -223,7 +219,7 @@ public class UserService {
         return result;
     }
 
-    public void deleteRedisData(LocationDto locationDto){
+    public void deleteRedisData(LocationDto locationDto) {
         User findUser = userRepository.findByNickname(locationDto.getName());
         String key = findUser.getNickname() + ":" + findUser.getId();
         geoOperations.remove(VENUS_VISITED, key);
