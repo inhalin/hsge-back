@@ -6,13 +6,16 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 @Slf4j
 @Configuration
@@ -24,8 +27,12 @@ public class FirebaseConfig {
 
     @Bean
     FirebaseMessaging firebaseMessaging() throws IOException {
-        FileInputStream serviceAccount =
-                new FileInputStream(serviceAccountPath.getFile().getAbsolutePath());
+
+        File file = new File("hsge", ".json");
+
+        InputStream inputStream = serviceAccountPath.getInputStream();
+        FileUtils.copyInputStreamToFile(inputStream, file);
+        FileInputStream serviceAccount = new FileInputStream(file);
 
         FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
