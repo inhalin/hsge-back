@@ -8,4 +8,6 @@ public interface UserTokenRepository extends JpaRepository<UserToken, Long>, Use
     boolean existsByEmailAndToken(String email, String token);
 
     void deleteByEmailAndToken(String email, String token);
+
+    void deleteByEmail(String email);
 }
