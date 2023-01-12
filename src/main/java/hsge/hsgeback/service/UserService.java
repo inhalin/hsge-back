@@ -129,29 +129,30 @@ public class UserService {
         }
         User reportee = optional1.get();
         reportee.setReportCount(reportee.getReportCount() + 1);
+        reportRepository.save(reportDto.toReportEntity(reporter, reportee));
         if (reportee.getReportCount() > 6) {
             reportee.setValid(false);
             List<Report> byReportee = reportRepository.findByReportee(reportee);
+            StringBuilder stringBuilder = new StringBuilder();
+            String description = stringBuilder.append(byReportee.get(0).getDescription()).append("\n")
+                    .append(byReportee.get(1).getDescription()).append("\n")
+                    .append(byReportee.get(2).getDescription()).append("\n")
+                    .append(byReportee.get(3).getDescription()).append("\n")
+                    .append(byReportee.get(4).getDescription()).append("\n")
+                    .append(byReportee.get(5).getDescription()).append("\n")
+                    .append(byReportee.get(6).getDescription()).append("\n")
+                    .toString();
             List<LayoutBlock> layoutBlocks = Blocks.asBlocks(
                     getHeader("🚨 7번 신고 당한 회원 탄생 🚨"),
                     Blocks.divider(),
                     getSection("☠️ 신고 당한 회원 ☠️ : " + reportee.getNickname()),
                     Blocks.divider(),
                     getSection("✅ 신고한 이유 : "),
-                    getSection(byReportee.get(0).getDescription()),
-                    getSection(byReportee.get(1).getDescription()),
-                    getSection(byReportee.get(2).getDescription()),
-                    getSection(byReportee.get(3).getDescription()),
-                    getSection(byReportee.get(4).getDescription()),
-                    getSection(byReportee.get(5).getDescription()),
-                    getSection(byReportee.get(6).getDescription()),
+                    getSection(description),
                     Blocks.divider());
-
             Slack.getInstance().send("https://hooks.slack.com/services/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",
                     WebhookPayloads.payload(p -> p.text("유저 신고 알람").blocks(layoutBlocks)));
-
         }
-        reportRepository.save(reportDto.toReportEntity(reporter, reportee));
     }
 
 
