@@ -36,6 +36,11 @@ dependencies {
     if (osdetector.arch.equals("aarch_64")) {
         implementation("io.netty:netty-resolver-dns-native-macos:4.1.84.Final:osx-aarch_64")
     }
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.squareup.okhttp3:okhttp:4.2.0'
+    implementation 'com.slack.api:slack-app-backend:1.6.2'
+    implementation 'com.slack.api:slack-api-model:1.6.2'
+    implementation 'com.slack.api:slack-api-client:1.6.2'
 
     implementation 'com.google.code.gson:gson:2.10'
     implementation 'org.modelmapper:modelmapper:3.1.0'
