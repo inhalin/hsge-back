@@ -23,12 +23,16 @@ import java.io.InputStream;
 public class FirebaseConfig {
 
     @Value("${fcm.service-account-path}")
-    private String serviceAccountPath;
+    private Resource serviceAccountPath;
 
     @Bean
     FirebaseMessaging firebaseMessaging() throws IOException {
 
-        FileInputStream serviceAccount = new FileInputStream(serviceAccountPath);
+        File file = new File("hsge", ".json");
+
+        InputStream inputStream = serviceAccountPath.getInputStream();
+        FileUtils.copyInputStreamToFile(inputStream, file);
+        FileInputStream serviceAccount = new FileInputStream(file);
 
         FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
