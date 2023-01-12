@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 @Service
 public class PetService {
     private final PetRepository petRepository;
