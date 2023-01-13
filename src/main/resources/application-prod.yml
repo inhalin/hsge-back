@@ -1,6 +1,2 @@
-spring:
-  config:
-    activate:
-      on-profile: prod
-  redis:
-    host: hsge-redis.jfqkzw.ng.0001.apn2.cache.amazonaws.com
+server:
+  port: 8080

@@ -1,0 +1,28 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                dir('.') {
+                    sh "./gradlew clean build"
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                dir('build/libs') {
+                    sshagent(credentials: ['hsge-key']) {
+                        sh 'scp -o StrictHostKeyChecking=no hsge-back-0.0.1-SNAPSHOT.jar ubuntu@192.168.0.6:/home/ubuntu'
+                    }
+                }
+            }
+        }
+        stage('Stop And Run') {
+            steps {
+                sshagent(credentials: ['hsge-key']) {
+                    sh 'ssh -o StrictHostKeyChecking=no ubuntu@192.168.0.6 "bash run.sh" &'
+                }
+            }
+        }
+    }
+}

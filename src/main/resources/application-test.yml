@@ -1,6 +1,3 @@
 spring:
-  config:
-    activate:
-      on-profile: test
   redis:
     host: localhost
