@@ -49,10 +49,10 @@ public class MessageSentEventHandler {
             boolean succeeded = fcmService.sendMulticastMessageTo(tokens, message);
 
             if (!succeeded) {
-                throw new RuntimeException("메시지 푸시 발송에 실패하였습니다.");
+                log.error("메시지 푸시 발송에 실패하였습니다.");
             }
         } catch (FirebaseMessagingException e) {
-            throw new RuntimeException("푸시 알림 동작시 문제가 발생했습니다.");
+            log.error("푸시 알림 동작시 문제가 발생했습니다.");
         }
     }
 }
