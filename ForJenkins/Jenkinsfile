@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                dir('.') {
+                    sh "./gradlew build"
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                dir('build/libs') {
+                    sshagent(credentials: ['hsge-key']) {
+                        sh 'scp -o StrictHostKeyChecking=no fianl_exam-0.0.1-SNAPSHOT.jar ubuntu@192.168.0.6:/home/ubuntu'
+                    }
+                }
+            }
+        }
+        stage('Stop Active Profile') {
+            steps {
+                sshagent(credentials: ['hsge-key']) {
+                    sh 'ssh -o StrictHostKeyChecking=no ubuntu@192.168.0.6 "bash stop.sh" &'
+                }
+            }
+        }
+        stage('Start Idle Profile') {
+            steps {
+                sshagent(credentials: ['hsge-key']) {
+                    sh 'ssh -o StrictHostKeyChecking=no ubuntu@192.168.0.6 "bash start.sh" &'
+                }
+            }
+        }
+        stage('Validate Service') {
+            steps {
+                sshagent(credentials: ['hsge-key']) {
+                    sh 'ssh -o StrictHostKeyChecking=no ubuntu@192.168.0.6 "bash health.sh" &'
+                }
+            }
+        }
+    }
+}
