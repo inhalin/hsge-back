@@ -36,7 +36,7 @@ public class PetService {
         User findUser = optional.orElseThrow(IllegalArgumentException::new);
         findUser.calculateLocation();
         List<User> userList = userRepository.findByLatitudeBetweenAndLongitudeBetween(findUser.getStartLatitude(), findUser.getEndLatitude(), findUser.getStartLongitude(), findUser.getEndLongitude());
-        return userList.stream()
+        List<PetResponseDto> petResponseDtoList = userList.stream()
                 .filter(v -> !Objects.equals(v.getId(), findUser.getId()))
                 .map(User::getPets)
                 .flatMap(List::stream)
@@ -55,6 +55,8 @@ public class PetService {
                         .petImg(pet.getPetImg().stream().map(PetImg::getS3Url).collect(Collectors.toList()))
                         .build())
                 .collect(Collectors.toList());
+        Collections.shuffle(petResponseDtoList);
+        return petResponseDtoList;
     }
 
     public List<PetInfoResponseDto> getAllPet(Long userId) {
