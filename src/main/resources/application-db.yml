@@ -21,7 +21,7 @@ spring:
 spring:
   config:
     activate:
-      on-profile: dev, prod, prod1, prod2
+      on-profile: prod, prod1, prod2
 
   redis:
     host: hsge-redis.jfqkzw.ng.0001.apn2.cache.amazonaws.com
