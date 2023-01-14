@@ -1,3 +1,3 @@
 spring:
   redis:
-    host: localhost
+    host: hsge-redis.jfqkzw.ng.0001.apn2.cache.amazonaws.com
