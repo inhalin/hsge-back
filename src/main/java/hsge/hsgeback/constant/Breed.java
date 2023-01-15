@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum Breed {
-    MIX("믹스"),
+    MIX("나만의 유일한 믹스"),
     DACHSHUND("닥스훈트"),
     MALTESE("말티즈"),
     RETRIEVER("리트리버"),
