@@ -46,12 +46,13 @@ public class WaveService {
             boolean succeeded = fcmService.sendMulticastMessageTo(tokens, message);
 
             if (!succeeded) {
-                throw new RuntimeException("손흔들기 푸시 발송에 실패하였습니다.");
+                log.error("손흔들기 푸시 발송에 실패하였습니다.");
             }
 
-            return BasicResponse.of(null, "손흔들기 푸시가 정상적으로 보내졌습니다");
         } catch (FirebaseMessagingException e) {
-            throw new RuntimeException("푸시 알림 동작시 문제가 발생하였습니다.");
+            log.error("푸시 알림 동작시 문제가 발생하였습니다.");
         }
+
+        return BasicResponse.of(null, "손흔들기 푸시를 보냈습니다.");
     }
 }
